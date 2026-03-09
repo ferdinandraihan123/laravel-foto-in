@@ -7,85 +7,64 @@
     
     <title>@yield('title', 'Foto.in') - Aplikasi Sewa Fotografi</title>
     
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Tailwind CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     @stack('styles')
 </head>
 <body class="font-sans antialiased bg-gray-50">
     
-    <nav class="bg-white shadow-sm border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Navbar Sederhana -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between h-16">
+                <!-- Logo -->
                 <div class="flex items-center">
-                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
-                       <div class="w-20 h-20 rounded-3xl flex items-center justify-center">
-                            <img src="{{ asset('storage/logo.png') }}" alt="Logo" class="w-full h-full object-contain p-2">
-                        </div>
-                        <span class="text-xl font-semibold text-gray-700">Foto.in</span>
-                    </a>
+                    <a href="{{ route('dashboard') }}" class="text-xl font-bold text-blue-600">Foto.in</a>
                     
-                    <div class="hidden sm:ml-8 sm:flex sm:space-x-8">
+                    <!-- Menu -->
+                    <div class="hidden md:flex ml-10 space-x-8">
                         @auth
-                            @if(auth()->user()->isAdmin() || auth()->user()->isKasir())
-                                <a href="{{ route('transaksis.index') }}" class="text-gray-700 hover:text-blue-700 px-3 py-2 text-sm font-medium">
-                                    Transaksi
-                                </a>
-                            @endif
-                            
                             @if(auth()->user()->isAdmin())
-                                <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-blue-700 px-3 py-2 text-sm font-medium">
-                                    Paket
-                                </a>
-                                <a href="{{ route('kategoris.index') }}" class="text-gray-700 hover:text-blue-700 px-3 py-2 text-sm font-medium">
-                                    Kategori
-                                </a>
-                                <a href="{{ route('users.index') }}" class="text-gray-700 hover:text-blue-700 px-3 py-2 text-sm font-medium">
-                                    Kelola Kasir
-                                </a>
-                            @endif
-                            
-                            @if(auth()->user()->isOwner() || auth()->user()->isAdmin())
-                                <a href="{{ route('laporan.index') }}" class="text-gray-700 hover:text-blue-700 px-3 py-2 text-sm font-medium">
-                                    Laporan
-                                </a>
+                                <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Dashboard</a>
+                                <a href="{{ route('admin.users.index') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Kasir</a>
+                                <a href="{{ route('admin.kategori.index') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Kategori</a>
+                                <a href="{{ route('admin.produk.index') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Produk</a>
+                                <a href="{{ route('admin.transaksi.index') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Transaksi</a>
+                                <a href="{{ route('admin.laporan.index') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Laporan</a>
+                            @elseif(auth()->user()->isKasir())
+                                <a href="{{ route('kasir.dashboard') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Dashboard</a>
+                                <a href="{{ route('kasir.produk.index') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Paket</a>
+                                <a href="{{ route('kasir.transaksi.index') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Transaksi</a>
+                            @elseif(auth()->user()->isOwner())
+                                <a href="{{ route('owner.dashboard') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Dashboard</a>
+                                <a href="{{ route('owner.produk.index') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Paket</a>
+                                <a href="{{ route('owner.laporan.index') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Laporan</a>
+                                <a href="{{ route('owner.log-aktivitas.index') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Log</a>
                             @endif
                         @endauth
                     </div>
                 </div>
                 
-                <div class="flex items-center space-x-4">
+                <!-- Logout -->
+                <div class="flex items-center">
                     @auth
-                        <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="flex items-center space-x-2 text-gray-700 hover:text-blue-700">
-                                <span>{{ Auth::user()->name }}</span>
-                                <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-                                    {{ ucfirst(Auth::user()->role) }}
-                                </span>
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linecap="round" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                            
-                            <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 border">
-                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    Profile
-                                </a>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        Logout
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="text-gray-700 hover:text-red-600 text-sm font-medium">
+                            Logout
+                        </button>
+                    </form>
                     @endauth
                 </div>
             </div>
         </div>
     </nav>
     
+    <!-- Content -->
     <main class="py-6">
         @if(session('success'))
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
@@ -114,7 +93,6 @@
         @yield('content')
     </main>
     
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('scripts')
 </body>
 </html>

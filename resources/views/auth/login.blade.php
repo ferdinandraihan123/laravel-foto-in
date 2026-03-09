@@ -6,15 +6,12 @@
         <div class="text-center">
             <div class="flex justify-center">
                 <div class="relative">
-                    <div class="w-28 h-28 bg-white rounded-3xl flex items-center justify-center shadow-xl transform rotate-3 hover:rotate-0 transition-transform duration-300 overflow-hidden">
+                    <div class="w-28 h-28 bg-white rounded-3xl flex items-center justify-center shadow-xl transfor">
                         <img src="{{ asset('storage/logo.png') }}" alt="Logo" class="w-full h-full object-contain p-2">
                     </div>
                 </div>
             </div>
             <div>
-                <h2 class="mt-6 text-4xl font-extrabold text-gray-900 tracking-tight">
-                    Foto.in
-                </h2>
                 <p class="mt-2 text-sm text-gray-600 max-w-xs mx-auto">
                     <span class="font-semibold text-blue-700">Capture Your Story</span>
                 </p>
@@ -30,13 +27,13 @@
                 <div>
                     <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
                         <span class="flex items-center">
-                            Email Address
+                            Email:
                         </span>
                     </label>
                     <input id="email" name="email" type="email" autocomplete="email" required autofocus
                            value="{{ old('email') }}"
                            class="appearance-none relative block w-full px-4 py-3 border rounded-xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm transition duration-150 ease-in-out @error('email') border-red-500 @enderror"
-                           placeholder="admin@fotoin.test">
+                           placeholder="Masukan Email...">
                     @error('email')
                         <p class="mt-2 text-sm text-red-600 flex items-center">
                             {{ $message }}
@@ -47,7 +44,7 @@
                 <div>
                     <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
                         <span class="flex items-center">
-                            Password
+                            Password:
                         </span>
                     </label>
                     <input id="password" name="password" type="password" autocomplete="current-password" required
