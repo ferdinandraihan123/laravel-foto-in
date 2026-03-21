@@ -11,29 +11,20 @@
         </div>
     </div>
 
-    <!-- Filter -->
     <div class="bg-white rounded-xl shadow-md p-4 mb-6 border border-gray-100">
         <form action="{{ route('admin.transaksi.index') }}" method="GET" class="flex flex-wrap gap-4">
-            <!-- Search -->
             <div class="flex-1 min-w-[200px]">
                 <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
-                    <input type="text" name="search" placeholder="Cari nomor/pelanggan..." value="{{ request('search') }}" class="w-full pl-10 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
+                    <input type="text" name="search" placeholder="Cari nomor/pelanggan..." value="{{ request('search') }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 outline-none">
                 </div>
             </div>
 
-            <!-- Filter Tanggal -->
             <div class="w-48">
-                <input type="date" name="tanggal" value="{{ request('tanggal') }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
+                <input type="date" name="tanggal" value="{{ request('tanggal') }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
             </div>
 
-            <!-- Filter Status -->
             <div class="w-40">
-                <select name="status" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
+                <select name="status" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
                     <option value="">Semua Status</option>
                     <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Proses</option>
@@ -42,17 +33,15 @@
                 </select>
             </div>
 
-            <!-- Tombol Filter -->
             <div>
                 <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
                     Filter
                 </button>
             </div>
 
-            <!-- TOMBOL RESET - Muncul hanya jika ada filter yang aktif -->
             @if(request()->anyFilled(['search', 'tanggal', 'status']))
             <div>
-                <a href="{{ route('admin.transaksi.index') }}" class="text-gray-500 hover:text-gray-700 px-4 py-2 flex items-center font-medium">
+                <a href="{{ route('admin.transaksi.index') }}" class="text-gray-500 hover:text-gray-700 px-4 py-2 inline-block">
                     Reset
                 </a>
             </div>
@@ -60,7 +49,6 @@
         </form>
     </div>
 
-    <!-- Table -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
@@ -93,27 +81,15 @@
                             <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Pending</span>
                             @elseif($trx->status == 'proses')
                             <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Proses</span>
-                            @else
+                            @elseif($trx->status == 'batal')
                             <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Batal</span>
+                            @else
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">{{ $trx->status }}</span>
                             @endif
-                            <br>
-                            <span class="text-xs mt-1 block">
-                                @if($trx->status_pembayaran == 'lunas')
-                                <span class="text-green-600">✓ Lunas</span>
-                                @else
-                                <span class="text-yellow-600">⏳ Belum</span>
-                                @endif
-                            </span>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $trx->user->name }}</td>
                         <td class="px-6 py-4 text-sm">
-                            <a href="{{ route('admin.transaksi.show', $trx->id_transaksi) }}" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linecap="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linecap="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                                Detail
-                            </a>
+                            <a href="{{ route('admin.transaksi.show', $trx->id_transaksi) }}" class="text-blue-600 hover:text-blue-800">Detail</a>
                         </td>
                     </tr>
                     @endforeach
@@ -121,13 +97,11 @@
             </table>
         </div>
 
-        <!-- Pagination -->
         <div class="px-6 py-6 border-t border-gray-100">
             <div class="flex justify-center">
                 {{ $transaksis->appends(request()->query())->links('pagination::tailwind') }}
             </div>
 
-            <!-- Info kecil di bawah -->
             <div class="text-center text-sm text-gray-400 mt-3">
                 Halaman {{ $transaksis->currentPage() }} dari {{ $transaksis->lastPage() }}
             </div>

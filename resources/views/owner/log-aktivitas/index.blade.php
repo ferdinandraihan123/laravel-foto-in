@@ -12,7 +12,7 @@
         </div>
         <div class="flex space-x-3">
             <!-- Tombol Export -->
-            <a href="{{ route('log-aktivitas.export', request()->query()) }}" 
+            <a href="{{ route('owner.log-aktivitas.export', request()->query()) }}" 
                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linecap="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -48,7 +48,7 @@
     
     <!-- Filter -->
     <div class="bg-white rounded-xl shadow-md p-4 mb-6 border border-gray-100">
-        <form action="{{ route('log-aktivitas.index') }}" method="GET" class="flex flex-wrap gap-4">
+        <form action="{{ route('owner.log-aktivitas.index') }}" method="GET" class="flex flex-wrap gap-4">
             <!-- Search -->
             <div class="flex-1 min-w-[200px]">
                 <input type="text" name="search" placeholder="Cari aktivitas/detail..." 
@@ -75,13 +75,13 @@
             </div>
             
             <!-- Filter Rentang Tanggal -->
-            <div class="flex gap-2">
+            {{-- <div class="flex gap-2">
                 <input type="date" name="dari_tanggal" placeholder="Dari" value="{{ request('dari_tanggal') }}"
                        class="w-36 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
                 <span class="text-gray-500 self-center">-</span>
                 <input type="date" name="sampai_tanggal" placeholder="Sampai" value="{{ request('sampai_tanggal') }}"
                        class="w-36 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
-            </div>
+            </div> --}}
             
             <div>
                 <button type="submit" class="bg-blue-700 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition">
@@ -135,7 +135,7 @@
                         <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{{ $log->detail ?? '-' }}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $log->ip_address ?? '-' }}</td>
                         <td class="px-6 py-4 text-sm">
-                            <a href="{{ route('log-aktivitas.show', $log->id_log) }}" 
+                            <a href="{{ route('owner.log-aktivitas.show', $log->id_log) }}" 
                                class="text-blue-600 hover:text-blue-800 inline-flex items-center">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linecap="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

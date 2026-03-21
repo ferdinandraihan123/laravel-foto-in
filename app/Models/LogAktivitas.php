@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class LogAktivitas extends Model
 {
@@ -33,10 +34,13 @@ class LogAktivitas extends Model
      */
     public static function catat($aktivitas, $detail = null)
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
         return self::create([
-            'id_user' => auth()->id(),
-            'aktivitas' => $aktivitas,
-            'detail' => $detail,
+            'id_user'    => $user->id,
+            'aktivitas'  => $aktivitas,
+            'detail'     => $detail,
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);

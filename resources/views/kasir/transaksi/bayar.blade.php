@@ -4,13 +4,11 @@
 
 @section('content')
 <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Header -->
     <div class="mb-6">
         <h1 class="text-3xl font-bold text-gray-900">Pembayaran</h1>
         <p class="text-gray-600 mt-1">Transaksi: {{ $transaksi->nomor_unik }}</p>
     </div>
     
-    <!-- Content -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
         <div class="p-8">
             <!-- Info Ringkas -->
@@ -27,21 +25,16 @@
                 </div>
             </div>
             
-            <!-- Form Pembayaran -->
             <form action="{{ route('kasir.transaksi.prosesBayar', $transaksi->id_transaksi) }}" method="POST">
                 @csrf
                 
                 <div class="space-y-6">
-                    <!-- Uang Bayar -->
                     <div>
-                        <label for="uang_bayar" class="block text-sm font-medium text-gray-700 mb-2">Jumlah Uang Bayar <span class="text-red-500">*</span></label>
+                        <label for="uang_bayar" class="block text-sm font-medium text-gray-700 mb-2">Jumlah Uang Bayar:</label>
                         <div class="relative">
                             <span class="absolute left-3 top-3 text-gray-500">Rp</span>
                             <input type="number" name="uang_bayar" id="uang_bayar" 
-                                   class="w-full pl-10 pr-4 py-3 text-lg rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 @error('uang_bayar') border-red-500 @enderror"
-                                   placeholder="Masukkan jumlah uang"
-                                   min="{{ $transaksi->total_harga }}"
-                                   required>
+                                   class="w-full pl-10 pr-4 py-3 text-lg rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 border boeder-gray-300 @error('uang_bayar') border-red-500 @enderror" min="{{ $transaksi->total_harga }}" required>
                         </div>
                         @error('uang_bayar')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -49,7 +42,6 @@
                         <p class="text-xs text-gray-500 mt-1">Minimal: Rp {{ number_format((float) $transaksi->total_harga, 0, ',', '.') }}</p>
                     </div>
                     
-                    <!-- Info Kembalian (akan dihitung via JS) -->
                     <div id="kembalian-info" class="bg-gray-50 rounded-lg p-4 hidden">
                         <div class="flex justify-between items-center">
                             <span class="text-gray-700">Uang Kembali:</span>
@@ -57,13 +49,12 @@
                         </div>
                     </div>
                     
-                    <!-- Submit Buttons -->
-                    <div class="flex items-center justify-end space-x-4 pt-4 border-t border-gray-200">
+                    <div class="flex items-center justify-beetwen space-x-4 pt-4 border-t border-gray-200">
                         <a href="{{ route('kasir.transaksi.show', $transaksi->id_transaksi) }}" class="px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition">
                             Batal
                         </a>
                         <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition shadow-md">
-                            Proses Pembayaran
+                            Bayar
                         </button>
                     </div>
                 </div>

@@ -23,8 +23,6 @@ class User extends Authenticatable
         'role',
         'status',
         'foto',
-        'no_hp',
-        'alamat',
         'last_login_at',
         'last_login_ip',
     ];

@@ -11,13 +11,13 @@
 
     <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
         <div class="p-8">
-            <!-- Header Status -->
             <div class="flex justify-between items-start mb-6">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900">{{ $transaksi->nomor_unik }}</h2>
                     <p class="text-sm text-gray-500">{{ $transaksi->created_at->format('d/m/Y H:i') }}</p>
                 </div>
-                <div class="text-right">
+                <div class="text-center">
+
                     <span class="px-3 py-1 rounded-full text-sm 
                         @if($transaksi->status == 'selesai') bg-green-100 text-green-800
                         @elseif($transaksi->status == 'pending') bg-yellow-100 text-yellow-800
@@ -25,18 +25,18 @@
                         @else bg-red-100 text-red-800 @endif">
                         {{ ucfirst($transaksi->status) }}
                     </span>
-                    <br>
-                    <span class="text-xs mt-1 inline-block">
+
+                    <div class="text-xs mt-1">
                         @if($transaksi->status_pembayaran == 'lunas')
-                        <span class="text-green-600 font-semibold">✓ Lunas</span>
+                        <span class="text-green-600 font-semibold">Lunas</span>
                         @else
-                        <span class="text-yellow-600 font-semibold">⏳ Belum Bayar</span>
+                        <span class="text-yellow-600 font-semibold">Belum Bayar</span>
                         @endif
-                    </span>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- Info Grid -->
             <div class="grid grid-cols-2 gap-6 mb-8">
                 <div>
                     <h3 class="font-semibold text-gray-700 mb-3">Informasi Pelanggan</h3>
@@ -67,7 +67,6 @@
                 </div>
             </div>
 
-            <!-- Detail Paket -->
             <h3 class="font-semibold text-gray-700 mb-3">Detail Paket</h3>
             <div class="bg-gray-50 rounded-lg p-4 mb-6">
                 <div class="flex justify-between items-center">
@@ -84,7 +83,6 @@
                 </div>
             </div>
 
-            <!-- Rincian Pembayaran -->
             <h3 class="font-semibold text-gray-700 mb-3">Rincian Pembayaran</h3>
             <div class="border-t border-gray-200 pt-4 mb-6">
                 <div class="flex justify-between text-sm mb-2">
@@ -101,7 +99,6 @@
                 </div>
             </div>
 
-            <!-- FORM UPDATE STATUS - UNTUK ADMIN -->
             <div class="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
                 <h3 class="font-semibold text-gray-900 mb-4">Update Status Transaksi</h3>
 
@@ -110,27 +107,22 @@
                     @method('PUT')
 
                     <select name="status" class="rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
-                        <option value="pending" {{ $transaksi->status == 'pending' ? 'selected' : '' }}>⏳ Pending</option>
-                        <option value="proses" {{ $transaksi->status == 'proses' ? 'selected' : '' }}>⚙️ Proses</option>
-                        <option value="selesai" {{ $transaksi->status == 'selesai' ? 'selected' : '' }}>✅ Selesai</option>
-                        <option value="batal" {{ $transaksi->status == 'batal' ? 'selected' : '' }}>❌ Batal</option>
+                        <option value="pending" {{ $transaksi->status == 'pending' ? 'selected' : '' }}> Pending</option>
+                        <option value="proses" {{ $transaksi->status == 'proses' ? 'selected' : '' }}>Proses</option>
+                        <option value="selesai" {{ $transaksi->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                        <option value="batal" {{ $transaksi->status == 'batal' ? 'selected' : '' }}>Batal</option>
                     </select>
 
                     <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition shadow-sm">
                         Update Status
                     </button>
                 </form>
-
-                <p class="text-xs text-gray-500 mt-3">
-                    * Mengubah status transaksi akan mempengaruhi ketersediaan produk.
-                </p>
             </div>
 
-            <!-- Tombol Kembali -->
             <div class="mt-6 flex justify-start">
-                <a href="{{ url()->previous() }}" class="px-6 py-3 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition">
+                <button onclick="window.history.back()" class="px-6 py-3 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition">
                     Kembali
-                </a>
+                </button>
             </div>
         </div>
     </div>

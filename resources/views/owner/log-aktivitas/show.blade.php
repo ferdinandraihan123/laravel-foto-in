@@ -82,7 +82,7 @@
             
             <!-- Tombol Aksi -->
             <div class="flex items-center space-x-4 pt-6 mt-6 border-t border-gray-200">
-                <a href="{{ route('log-aktivitas.index') }}" 
+                <a href="{{ route('owner.log-aktivitas.index') }}" 
                    class="px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition">
                     Kembali
                 </a>

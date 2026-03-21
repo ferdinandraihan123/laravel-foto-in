@@ -23,7 +23,7 @@
                 <h3 class="ml-4 text-xl font-semibold text-gray-900">Harian</h3>
             </div>
             <p class="text-gray-500 mb-4">Lihat laporan transaksi per hari</p>
-            <form action="{{ route('laporan.harian') }}" method="GET" class="space-y-3">
+            <form action="{{ route('owner.laporan.harian') }}" method="GET" class="space-y-3">
                 <input type="date" name="tanggal" value="{{ now()->format('Y-m-d') }}" 
                        class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
                 <button type="submit" class="w-full bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
@@ -43,7 +43,7 @@
                 <h3 class="ml-4 text-xl font-semibold text-gray-900">Bulanan</h3>
             </div>
             <p class="text-gray-500 mb-4">Lihat laporan transaksi per bulan</p>
-            <form action="{{ route('laporan.bulanan') }}" method="GET" class="space-y-3">
+            <form action="{{ route('owner.laporan.bulanan') }}" method="GET" class="space-y-3">
                 <div class="grid grid-cols-2 gap-2">
                     <select name="bulan" class="rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
                         @for($i = 1; $i <= 12; $i++)
@@ -75,7 +75,7 @@
                 <h3 class="ml-4 text-xl font-semibold text-gray-900">Tahunan</h3>
             </div>
             <p class="text-gray-500 mb-4">Lihat laporan transaksi per tahun</p>
-            <form action="{{ route('laporan.tahunan') }}" method="GET" class="space-y-3">
+            <form action="{{ route('owner.laporan.tahunan') }}" method="GET" class="space-y-3">
                 <select name="tahun" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
                     @for($i = now()->year; $i >= now()->year - 3; $i--)
                         <option value="{{ $i }}">{{ $i }}</option>
@@ -93,7 +93,7 @@
         <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Laporan Kinerja Kasir</h3>
             <p class="text-gray-500 mb-4">Lihat performa dan transaksi per kasir</p>
-            <a href="{{ route('laporan.kinerja-kasir') }}" class="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">
+            <a href="{{ route('owner.laporan.kinerja-kasir') }}" class="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">
                 Lihat Laporan
             </a>
         </div>
@@ -101,7 +101,7 @@
         <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Laporan Produk Populer</h3>
             <p class="text-gray-500 mb-4">Lihat paket fotografi paling laris</p>
-            <a href="{{ route('laporan.produk-populer') }}" class="inline-block bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition">
+            <a href="{{ route('owner.laporan.produk-populer') }}" class="inline-block bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition">
                 Lihat Laporan
             </a>
         </div>

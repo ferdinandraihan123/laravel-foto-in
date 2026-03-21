@@ -11,7 +11,7 @@ class Product extends Model
 
     protected $table = 'products';
     protected $primaryKey = 'id_jasa';
-    
+
     protected $fillable = [
         'id_kategori',
         'nama_jasa',
@@ -43,7 +43,7 @@ class Product extends Model
     }
 
     /**
-     * FORMAT HARGA - CASTING KE FLOAT DULU
+     * FORMAT HARGA
      */
     public function getHargaFormattedAttribute()
     {
@@ -52,28 +52,9 @@ class Product extends Model
     }
 
     /**
-     * CEK APAKAH PRODUK TERSEDIA UNTUK DIPESAN
-     */
-    public function isAvailable()
-    {
-        return $this->status === 'aktif';
-    }
-
-    /**
-     * CEK APAKAH PRODUK SEDANG DALAM PROSES PENGERJAAN
+     * CEK APAKAH PRODUK SEDANG ADA TRANSAKSI AKTIF (PENDING ATAU PROSES)
      */
     public function isInProgress()
-    {
-        // Cek apakah ada transaksi dengan status 'proses' atau 'pending' untuk produk ini
-        return $this->transaksis()
-            ->whereIn('status', ['proses', 'pending'])
-            ->exists();
-    }
-
-    /**
-     * CEK APAKAH PRODUK SEDANG DIPESAN (ADA TRANSAKSI AKTIF)
-     */
-    public function hasActiveTransaction()
     {
         return $this->transaksis()
             ->whereIn('status', ['pending', 'proses'])
@@ -81,26 +62,61 @@ class Product extends Model
     }
 
     /**
+     * CEK APAKAH PRODUK TERSEDIA UNTUK DIPESAN
+     * Tersedia jika status aktif DAN TIDAK ADA transaksi pending/proses
+     */
+    public function isAvailable()
+    {
+        if ($this->status !== 'aktif') {
+            return false;
+        }
+        
+        return !$this->isInProgress();
+    }
+
+    /**
+     * CEK APAKAH PRODUK SEDANG DIPESAN (ADA TRANSAKSI AKTIF)
+     */
+    public function hasActiveTransaction()
+    {
+        return $this->isInProgress();
+    }
+
+    /**
      * GET STATUS TEXT UNTUK DITAMPILKAN
+     * - Proses: ada transaksi pending/proses
+     * - Tersedia: aktif & tidak ada transaksi aktif
+     * - Tidak Tersedia: status nonaktif
      */
     public function getStatusTextAttribute()
     {
-        if ($this->isInProgress()) {
-            return 'Sedang Diproses';
+        if ($this->status !== 'aktif') {
+            return 'Tidak Tersedia';
         }
-        return $this->status == 'aktif' ? 'Tersedia' : 'Tidak Tersedia';
+        
+        if ($this->isInProgress()) {
+            return 'Proses';
+        }
+        
+        return 'Tersedia';
     }
 
     /**
      * GET BADGE COLOR BERDASARKAN STATUS
+     * - Proses: biru (bg-blue-100 text-blue-800)
+     * - Tersedia: hijau (bg-green-100 text-green-800)
+     * - Tidak Tersedia: merah (bg-red-100 text-red-800)
      */
     public function getStatusBadgeClassAttribute()
     {
-        if ($this->isInProgress()) {
-            return 'bg-yellow-100 text-yellow-800';
+        if ($this->status !== 'aktif') {
+            return 'bg-red-100 text-red-800';
         }
-        return $this->status == 'aktif' 
-            ? 'bg-green-100 text-green-800' 
-            : 'bg-red-100 text-red-800';
+        
+        if ($this->isInProgress()) {
+            return 'bg-blue-100 text-blue-800';
+        }
+        
+        return 'bg-green-100 text-green-800';
     }
 }

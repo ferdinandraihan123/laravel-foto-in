@@ -13,40 +13,22 @@
         </div>
 
         <a href="{{ route('admin.users.create') }}" class="bg-blue-700 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition shadow-md flex items-center">
-
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-
             Tambah User
         </a>
     </div>
 
 
-    {{-- SEARCH & FILTER --}}
     <div class="bg-white rounded-xl shadow-md p-4 mb-6 border border-gray-100">
 
         <form action="{{ route('admin.users.index') }}" method="GET" class="flex flex-wrap gap-4">
 
-            {{-- SEARCH --}}
             <div class="flex-1 min-w-[200px]">
-
                 <div class="relative">
-
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
-
-                    <input type="text" name="search" placeholder="Cari nama/email..." value="{{ request('search') }}" class="w-full pl-10 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
-
+                    <input type="text" name="search" placeholder="Cari nama/email..." value="{{ request('search') }}" class="w-full pl-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none">
                 </div>
-
             </div>
 
 
-            {{-- FILTER ROLE --}}
             <div class="w-40">
 
                 <select name="role" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
@@ -66,7 +48,6 @@
             </div>
 
 
-            {{-- FILTER STATUS --}}
             <div class="w-40">
 
                 <select name="status" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
@@ -122,25 +103,14 @@
             <table class="min-w-full divide-y divide-gray-200">
 
                 <thead class="bg-gray-50">
-
                     <tr>
-
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
-
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
-
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
-
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No. HP</th>
-
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
-
                     </tr>
-
                 </thead>
 
 
@@ -166,13 +136,8 @@
 
                         <td class="px-6 py-4 text-sm">
 
-                            <span class="px-2 py-1 rounded-full text-xs
-                    {{ $user->role=='admin'
-                    ? 'bg-purple-100 text-purple-800'
-                    : 'bg-blue-100 text-blue-800' }}">
-
+                            <span class="px-2 py-1 rounded-full text-xs {{ $user->role == 'admin'}}">
                                 {{ ucfirst($user->role) }}
-
                             </span>
 
                         </td>
@@ -180,22 +145,11 @@
 
                         <td class="px-6 py-4 text-sm">
 
-                            <span class="px-2 py-1 rounded-full text-xs
-                    {{ $user->status=='aktif'
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-red-100 text-red-800' }}">
-
+                            <span class="px-2 py-1 rounded-full text-xs {{ $user->status=='aktif' ? : 'bg-red-100 text-red-800' }}">
                                 {{ ucfirst($user->status) }}
-
                             </span>
 
                         </td>
-
-
-                        <td class="px-6 py-4 text-sm text-gray-500">
-                            {{ $user->no_hp ?? '-' }}
-                        </td>
-
 
 
                         <td class="px-6 py-4 text-sm space-x-2">
@@ -212,13 +166,9 @@
                                 @csrf
                                 @method('PUT')
 
-                                <button type="submit" class="text-{{ $user->status=='aktif'
-                                ? 'yellow'
-                                : 'green' }}-600">
+                                <button type="submit" class="text-{{ $user->status=='aktif' ? 'yellow' : 'green' }}-600 hover:underline">
 
-                                    {{ $user->status=='aktif'
-                            ? 'Nonaktifkan'
-                            : 'Aktifkan' }}
+                                    {{ $user->status=='aktif' ? 'Nonaktifkan' : 'Aktifkan' }}
 
                                 </button>
 
@@ -232,7 +182,7 @@
                                 @csrf
                                 @method('DELETE')
 
-                                <button class="text-red-600 hover:text-red-800">
+                                <button class="text-red-600 hover:text-red-800 hover:underline">
                                     Hapus
                                 </button>
 
@@ -248,7 +198,7 @@
 
                     <tr>
 
-                        <td colspan="7" class="text-center py-6 text-gray-500">
+                        <td colspan="6" class="text-center py-6 text-gray-500">
 
                             Data user tidak ditemukan
 

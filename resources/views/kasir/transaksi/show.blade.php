@@ -8,7 +8,7 @@
         <h1 class="text-3xl font-bold text-gray-900">Detail Transaksi</h1>
         <p class="text-gray-600 mt-1">Informasi lengkap transaksi</p>
     </div>
-        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+    <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
         <div class="p-8">
             <div class="flex justify-between items-start mb-6">
                 <div>
@@ -16,19 +16,15 @@
                     <p class="text-sm text-gray-500">{{ $transaksi->created_at->format('d/m/Y H:i') }}</p>
                 </div>
                 <div class="text-right">
-                    <span class="px-3 py-1 rounded-full text-sm 
-                        @if($transaksi->status == 'selesai') 
-                        @elseif($transaksi->status == 'pending')
-                        @elseif($transaksi->status == 'proses')
-                        @else bg-red-100 text-red-800 @endif">
-                        {{ ucfirst($transaksi->status) }}
+                    <span class="px-3 py-1 rounded-full text-xs {{ $transaksi->status_badge_class }}">
+                        {{ $transaksi->status_text }}
                     </span>
                     <br>
                     <span class="text-xs mt-1 inline-block">
                         @if($transaksi->status_pembayaran == 'lunas')
-                            <span class="text-green-600 font-semibold">✓ Lunas</span>
+                        <span class="text-green-600 font-semibold">Lunas</span>
                         @else
-                            <span class="text-yellow-600 font-semibold">⏳ Belum Bayar</span>
+                        <span class="text-yellow-600 font-semibold pl-2">Belum Bayar</span>
                         @endif
                     </span>
                 </div>
@@ -70,7 +66,7 @@
                         <p class="font-medium text-gray-900">{{ $transaksi->product->nama_jasa }}</p>
                         <p class="text-sm text-gray-500">Kategori: {{ $transaksi->product->kategori->nama_kategori ?? '-' }}</p>
                         @if($transaksi->catatan)
-                            <p class="text-sm text-gray-500 mt-2">Catatan: {{ $transaksi->catatan }}</p>
+                        <p class="text-sm text-gray-500 mt-2">Catatan: {{ $transaksi->catatan }}</p>
                         @endif
                     </div>
                     <div class="text-right">
@@ -94,39 +90,27 @@
                     <span class="font-semibold text-green-600">Rp {{ number_format((float) $transaksi->uang_kembali, 0, ',', '.') }}</span>
                 </div>
             </div>
-            
-            <div class="flex items-center space-x-4 pt-4 border-t border-gray-200">
-                @if($transaksi->status_pembayaran == 'belum' && (auth()->user()->isKasir() || auth()->user()->isAdmin()))
-                    <a href="{{ route('kasir.transaksi.bayar', $transaksi->id_transaksi) }}" 
-                       class="bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition shadow-md">
-                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        Proses Pembayaran
-                    </a>
-                @endif
-                
-                @if($transaksi->status_pembayaran == 'lunas')
-                    <a href="{{ route('kasir.transaksi.struk', $transaksi->id_transaksi) }}" 
-                       class="bg-blue-700 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition shadow-md">
-                        Lihat Struk
-                    </a>
-                @endif
-                
-                {{-- @if($transaksi->status == 'pending' && (auth()->user()->isKasir() || auth()->user()->isAdmin()))
-                    <form action="{{ route('kasir.transaksi.batal', $transaksi->id_transaksi) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin membatalkan transaksi ini?')">
-                        @csrf
-                        @method('POST')
-                        <button type="submit" class="px-6 py-3 border border-red-300 text-red-600 rounded-full hover:bg-red-50 transition">
-                            Batalkan Transaksi
-                        </button>
-                    </form>
-                @endif --}}
-                
-                <a href="{{ route('kasir.transaksi.index') }}" 
-                   class="px-6 py-3 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition">
+
+            <div class="flex items-center gap-3 mt-6 pt-4 border-t">
+
+                <a href="{{ url()->previous() }}" class="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-100">
                     Kembali
                 </a>
+
+                @php
+                $fromDashboard = str_contains(url()->previous() ?? '', 'dashboard');
+                @endphp
+
+                @if(!$fromDashboard)
+                <a href="{{ route('kasir.transaksi.bayar', $transaksi->id_transaksi) }}" class="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
+                    Proses Pembayaran
+                </a>
+                @else
+                <a href="{{ route('kasir.transaksi.struk', $transaksi->id_transaksi) }}" class="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
+                    Lihat Struk
+                </a>
+                @endif
+
             </div>
         </div>
     </div>

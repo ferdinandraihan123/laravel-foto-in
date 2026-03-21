@@ -60,13 +60,18 @@
                                 <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Selesai</span>
                             @elseif($trx->status == 'pending')
                                 <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Pending</span>
+                            @elseif($trx->status == 'proses')
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Proses</span>
+                            @elseif($trx->status == 'batal')
+                                <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Batal</span>
                             @else
-                                <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">{{ $trx->status }}</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">{{ $trx->status }}</span>
                             @endif
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $trx->user->name }}</td>
                         <td class="px-6 py-4 text-sm">
-                        <a href="{{ route('admin.transaksi.show', $trx->id_transaksi) }}" class="text-blue-600 hover:text-blue-800">Detail</a>                        </td>
+                            <a href="{{ route('admin.transaksi.show', $trx->id_transaksi) }}" class="text-blue-600 hover:text-blue-800">Detail</a>
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>

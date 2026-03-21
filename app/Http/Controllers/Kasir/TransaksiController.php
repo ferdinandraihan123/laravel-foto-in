@@ -7,6 +7,7 @@ use App\Models\Transaksi;
 use App\Models\Product;
 use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransaksiController extends Controller
@@ -14,8 +15,11 @@ class TransaksiController extends Controller
 
     public function index(Request $request)
     {
-        $query = Transaksi::with(['product','user'])
-            ->where('id_user', auth()->id());
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $query = Transaksi::with(['product', 'user'])
+            ->where('id_user', $user->id);
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -38,33 +42,31 @@ class TransaksiController extends Controller
     }
 
 
-    public function create()
+    public function create(Request $request)
     {
-        $products = Product::where('status', 'aktif')->get();
-        return view('kasir.transaksi.create', compact('products'));
+        $products   = Product::where('status', 'aktif')->get();
+        $selectedId = $request->id_jasa;
+        return view('kasir.transaksi.create', compact('products', 'selectedId'));
     }
 
 
     public function store(Request $request)
     {
         $request->validate([
-            'nama_pelanggan' => 'required|string|max:255',
+            'nama_pelanggan'  => 'required|string|max:255',
             'no_hp_pelanggan' => 'required|string|max:20',
-            'id_jasa' => 'required|exists:products,id_jasa',
-            'jumlah' => 'required|integer|min:1',
+            'id_jasa'         => 'required|exists:products,id_jasa',
+            'jumlah'          => 'required|integer|min:1',
             'tanggal_booking' => 'required|date|after_or_equal:today',
-            'jam_booking' => 'nullable|date_format:H:i',
-            'catatan' => 'nullable|string'
+            'jam_booking'     => 'nullable|date_format:H:i',
+            'catatan'         => 'nullable|string'
         ]);
 
         $product = Product::findOrFail($request->id_jasa);
 
+        // Cek apakah produk tersedia (status aktif DAN tidak ada transaksi aktif)
         if (!$product->isAvailable()) {
-            return back()->with('error', 'Produk tidak tersedia untuk dipesan.');
-        }
-
-        if ($product->isInProgress()) {
-            return back()->with('error', 'Produk sedang dalam proses pengerjaan.');
+            return back()->with('error', 'Produk tidak tersedia atau sedang dipesan oleh pelanggan lain.');
         }
 
         $tanggalBooking = $request->tanggal_booking;
@@ -74,23 +76,29 @@ class TransaksiController extends Controller
         }
 
         $hargaSatuan = (float) $product->harga;
-        $jumlah = (int) $request->jumlah;
-        $totalHarga = $hargaSatuan * $jumlah;
+        $jumlah      = (int) $request->jumlah;
+        $totalHarga  = $hargaSatuan * $jumlah;
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
         $transaksi = Transaksi::create([
-            'id_user' => auth()->id(),
-            'nomor_unik' => Transaksi::generateNomorUnik(),
-            'nama_pelanggan' => $request->nama_pelanggan,
-            'no_hp_pelanggan' => $request->no_hp_pelanggan,
-            'id_jasa' => $request->id_jasa,
-            'jumlah' => $jumlah,
-            'harga_satuan' => $hargaSatuan,
-            'total_harga' => $totalHarga,
-            'tanggal_booking' => $tanggalBooking,
-            'status' => 'pending',
+            'id_user'           => $user->id,
+            'nomor_unik'        => Transaksi::generateNomorUnik(),
+            'nama_pelanggan'    => $request->nama_pelanggan,
+            'no_hp_pelanggan'   => $request->no_hp_pelanggan,
+            'id_jasa'           => $request->id_jasa,
+            'jumlah'            => $jumlah,
+            'harga_satuan'      => $hargaSatuan,
+            'total_harga'       => $totalHarga,
+            'tanggal_booking'   => $tanggalBooking,
+            'status'            => 'pending',
             'status_pembayaran' => 'belum',
-            'catatan' => $request->catatan
+            'catatan'           => $request->catatan
         ]);
+
+        // Produk otomatis terkunci karena isAvailable() cek transaksi aktif
+        // Tidak perlu ubah kolom status produk
 
         LogAktivitas::catat(
             'Membuat transaksi baru',
@@ -104,8 +112,11 @@ class TransaksiController extends Controller
 
     public function show($id)
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
         $transaksi = Transaksi::with(['product', 'product.kategori'])
-            ->where('id_user', auth()->id())
+            ->where('id_user', $user->id)
             ->findOrFail($id);
 
         return view('kasir.transaksi.show', compact('transaksi'));
@@ -114,7 +125,10 @@ class TransaksiController extends Controller
 
     public function bayar($id)
     {
-        $transaksi = Transaksi::where('id_user', auth()->id())->findOrFail($id);
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $transaksi = Transaksi::where('id_user', $user->id)->findOrFail($id);
 
         if ($transaksi->status_pembayaran === 'lunas') {
             return redirect()->route('kasir.transaksi.show', $transaksi->id_transaksi)
@@ -127,21 +141,24 @@ class TransaksiController extends Controller
 
     public function prosesBayar(Request $request, $id)
     {
-        $transaksi = Transaksi::where('id_user', auth()->id())->findOrFail($id);
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $transaksi = Transaksi::where('id_user', $user->id)->findOrFail($id);
 
         $request->validate([
             'uang_bayar' => 'required|numeric|min:' . (float) $transaksi->total_harga
         ]);
 
-        $uangBayar = (float) $request->uang_bayar;
-        $totalHarga = (float) $transaksi->total_harga;
+        $uangBayar   = (float) $request->uang_bayar;
+        $totalHarga  = (float) $transaksi->total_harga;
         $uangKembali = $uangBayar - $totalHarga;
 
         $transaksi->update([
-            'uang_bayar' => $uangBayar,
-            'uang_kembali' => $uangKembali,
+            'uang_bayar'        => $uangBayar,
+            'uang_kembali'      => $uangKembali,
             'status_pembayaran' => 'lunas',
-            'status' => 'selesai'
+            'status'            => 'pending', // tunggu konfirmasi admin
         ]);
 
         LogAktivitas::catat(
@@ -156,8 +173,11 @@ class TransaksiController extends Controller
 
     public function struk($id)
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
         $transaksi = Transaksi::with(['user', 'product'])
-            ->where('id_user', auth()->id())
+            ->where('id_user', $user->id)
             ->findOrFail($id);
 
         return view('kasir.transaksi.struk', compact('transaksi'));
@@ -166,8 +186,11 @@ class TransaksiController extends Controller
 
     public function downloadStruk($id)
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
         $transaksi = Transaksi::with(['user', 'product', 'product.kategori'])
-            ->where('id_user', auth()->id())
+            ->where('id_user', $user->id)
             ->findOrFail($id);
 
         $pdf = Pdf::loadView('kasir.transaksi.struk-pdf', compact('transaksi'));
@@ -178,7 +201,10 @@ class TransaksiController extends Controller
 
     public function batal($id)
     {
-        $transaksi = Transaksi::where('id_user', auth()->id())->findOrFail($id);
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $transaksi = Transaksi::where('id_user', $user->id)->findOrFail($id);
 
         if ($transaksi->status_pembayaran === 'lunas') {
             return back()->with('error', 'Transaksi yang sudah lunas tidak bisa dibatalkan');
@@ -201,45 +227,51 @@ class TransaksiController extends Controller
 
     public function laporan(Request $request)
     {
-        $query = Transaksi::with(['product','user'])
-            ->where('id_user', auth()->id());
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
-        if ($request->search) {
-            $query->where(function($q) use ($request){
-                $q->where('nomor_unik','like','%'.$request->search.'%')
-                ->orWhere('nama_pelanggan','like','%'.$request->search.'%');
+        $query = Transaksi::with(['product', 'user'])
+            ->where('id_user', $user->id);
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nomor_unik', 'like', '%' . $request->search . '%')
+                    ->orWhere('nama_pelanggan', 'like', '%' . $request->search . '%');
             });
         }
 
-        if ($request->tanggal) {
-            $query->whereDate('created_at',$request->tanggal);
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
         }
 
         $transaksis = $query->latest()->get();
 
-        return view('kasir.laporan.index',compact('transaksis'));
+        return view('kasir.laporan.index', compact('transaksis'));
     }
 
 
     public function cetakLaporan(Request $request)
     {
-        $query = Transaksi::with(['product','user'])
-            ->where('id_user', auth()->id());
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
-        if ($request->search) {
-            $query->where(function($q) use ($request){
-                $q->where('nomor_unik','like','%'.$request->search.'%')
-                ->orWhere('nama_pelanggan','like','%'.$request->search.'%');
+        $query = Transaksi::with(['product', 'user'])
+            ->where('id_user', $user->id);
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nomor_unik', 'like', '%' . $request->search . '%')
+                    ->orWhere('nama_pelanggan', 'like', '%' . $request->search . '%');
             });
         }
 
-        if ($request->tanggal) {
-            $query->whereDate('created_at',$request->tanggal);
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
         }
 
         $transaksis = $query->latest()->get();
 
-        $pdf = Pdf::loadView('kasir.laporan.pdf',compact('transaksis'));
+        $pdf = Pdf::loadView('kasir.laporan.pdf', compact('transaksis'));
 
         return $pdf->download('laporan-transaksi.pdf');
     }

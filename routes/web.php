@@ -4,8 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\LaporanController;
-use App\Http\Controllers\Kasir\TransaksiController;
-
+// HAPUS import Kasir\TransaksiController dari sini karena sudah tidak dipakai di level atas
 
 // ==================== PUBLIC ROUTES ====================
 Route::get('/', function () {
@@ -34,19 +33,19 @@ Route::middleware(['auth'])->group(function () {
         // Manajemen Kategori
         Route::resource('kategori', App\Http\Controllers\Admin\KategoriController::class);
 
-        // MANAJEMEN PRODUK
+        // Manajemen Produk
         Route::resource('produk', App\Http\Controllers\Admin\ProductController::class);
-        // TAMBAHKAN ROUTE TOGGLE STATUS PRODUK
         Route::put('/produk/{produk}/toggle-status', [App\Http\Controllers\Admin\ProductController::class, 'toggleStatus'])->name('produk.toggle-status');
 
-        // Lihat Transaksi
+        // Transaksi Admin
         Route::get('/transaksi', [App\Http\Controllers\Admin\TransaksiController::class, 'index'])->name('transaksi.index');
         Route::get('/transaksi/{id}', [App\Http\Controllers\Admin\TransaksiController::class, 'show'])->name('transaksi.show');
 
-        // Update status transaksi
-        Route::put('/transaksi/{id}/status', [App\Http\Controllers\Admin\TransaksiController::class, 'updateStatus'])->name('transaksi.update-status');
+        // ✅ ROUTE UPDATE STATUS — sekarang benar ada di group admin
+        // nama route jadi: admin.transaksi.update-status
+        Route::put('/transaksi/{id}/update-status', [App\Http\Controllers\Admin\TransaksiController::class, 'updateStatus'])->name('transaksi.update-status');
 
-        // laporan admin
+        // Laporan Admin
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
         Route::get('/laporan/pdf', [LaporanController::class, 'pdf'])->name('laporan.pdf');
     });
@@ -64,11 +63,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/transaksi/{id}/batal', [App\Http\Controllers\Kasir\TransaksiController::class, 'batal'])->name('transaksi.batal');
     });
 
-    // ==================== ROUTES OWNER ====================
     Route::prefix('owner')->name('owner.')->middleware('role:owner')->group(function () {
-        Route::get('/dashboard', [App\Http\Controllers\Owner\DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/produk', [App\Http\Controllers\Owner\ProductController::class, 'index'])->name('produk.index');
 
+        // Dashboard Owner
+        Route::get('/dashboard', [App\Http\Controllers\Owner\DashboardController::class, 'index'])->name('dashboard');
+
+        // Produk Owner
+        Route::resource('produk', App\Http\Controllers\Owner\ProductController::class);
+        Route::get('/produk', [App\Http\Controllers\Owner\ProductController::class, 'index'])->name('produk.index');
+        
+        // Laporan Owner
         Route::prefix('laporan')->name('laporan.')->group(function () {
             Route::get('/', [App\Http\Controllers\Owner\LaporanController::class, 'index'])->name('index');
             Route::get('/harian', [App\Http\Controllers\Owner\LaporanController::class, 'harian'])->name('harian');
@@ -78,6 +82,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/produk-populer', [App\Http\Controllers\Owner\LaporanController::class, 'produkPopuler'])->name('produk-populer');
         });
 
+        // USERS OWNER
+        Route::get('/users', [App\Http\Controllers\Owner\UserController::class, 'index'])->name('users.index');
+
+        // Log Aktivitas Owner
         Route::prefix('log-aktivitas')->name('log-aktivitas.')->group(function () {
             Route::get('/', [App\Http\Controllers\Owner\LogAktivitasController::class, 'index'])->name('index');
             Route::get('/export', [App\Http\Controllers\Owner\LogAktivitasController::class, 'export'])->name('export');

@@ -9,32 +9,37 @@
     <h1 class="text-2xl font-bold mb-6">Laporan Transaksi</h1>
 
 
-    <!-- FILTER -->
     <div class="bg-white p-5 rounded-xl shadow mb-6">
 
-        <form method="GET" action="{{ route('admin.laporan.index') }}" class="flex flex-wrap gap-4 items-end">
+        <form method="GET" action="{{ route('admin.laporan.index') }}" class="flex flex-wrap items-center justify-between gap-4">
 
-            <div>
-                <label class="text-sm text-gray-600">Dari Tanggal</label>
-                <input type="date" name="dari" value="{{ request('dari') }}" class="border rounded-lg px-3 py-2">
-            </div>
+            <div class="flex items-center gap-4">
 
-            <div>
-                <label class="text-sm text-gray-600">Sampai Tanggal</label>
-                <input type="date" name="sampai" value="{{ request('sampai') }}" class="border rounded-lg px-3 py-2">
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600">Dari Tanggal</label>
+                    <input type="date" name="dari" value="{{ request('dari') }}" class="border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600">Sampai Tanggal</label>
+                    <input type="date" name="sampai" value="{{ request('sampai') }}" class="border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+
             </div>
 
             <div class="flex gap-2">
 
-                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                <button class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition">
                     Filter
                 </button>
 
-                <a href="{{ route('admin.laporan.index') }}" class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+                @if(request('dari') || request('sampai'))
+                <a href="{{ route('admin.laporan.index') }}" class="px-5 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
                     Reset
                 </a>
+                @endif
 
-                <a href="{{ route('admin.laporan.pdf',request()->all()) }}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                <a href="{{ route('admin.laporan.pdf', request()->all()) }}" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition">
                     Cetak PDF
                 </a>
 
@@ -142,9 +147,11 @@
         </div>
 
 
-        <!-- PAGINATION -->
-        <div class="p-4">
+        <div class="p-4 mt-3">
             {{ $transaksi->withQueryString()->links() }}
+        </div>
+        <div class="text-center text-sm text-gray-400 mb-5">
+            Halaman {{ $transaksi->currentPage() }} dari {{ $transaksi->lastPage() }}
         </div>
 
     </div>
