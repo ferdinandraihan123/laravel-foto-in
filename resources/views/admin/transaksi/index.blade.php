@@ -15,16 +15,16 @@
         <form action="{{ route('admin.transaksi.index') }}" method="GET" class="flex flex-wrap gap-4">
             <div class="flex-1 min-w-[200px]">
                 <div class="relative">
-                    <input type="text" name="search" placeholder="Cari nomor/pelanggan..." value="{{ request('search') }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 outline-none">
+                    <input type="text" name="search" placeholder="Cari nomor/pelanggan..." value="{{ request('search') }}" class="w-full px-6 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 outline-none">
                 </div>
             </div>
 
             <div class="w-48">
-                <input type="date" name="tanggal" value="{{ request('tanggal') }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
+                <input type="date" name="tanggal" value="{{ request('tanggal') }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
             </div>
 
             <div class="w-40">
-                <select name="status" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
+                <select name="status" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
                     <option value="">Semua Status</option>
                     <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Proses</option>

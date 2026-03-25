@@ -55,7 +55,6 @@ class LaporanController extends Controller
 
         $query = Transaksi::with('product');
 
-        // FILTER TANGGAL (sama seperti index)
         if ($request->dari) {
             $query->whereDate('created_at','>=',$request->dari);
         }

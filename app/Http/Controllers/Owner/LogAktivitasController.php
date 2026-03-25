@@ -12,7 +12,8 @@ class LogAktivitasController extends Controller
 {
     public function index(Request $request)
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->isOwner()) {
+        $userRole = auth()->user()->role;
+        if ($userRole != 'admin' && $userRole != 'owner') {
             abort(403, 'Unauthorized access.');
         }
 
@@ -48,23 +49,26 @@ class LogAktivitasController extends Controller
         return view('owner.log-aktivitas.index', compact('logs', 'users'));
     }
 
-    public function show(LogAktivitas $logAktivitas)
+    public function show($id)
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->isOwner()) {
+        $userRole = auth()->user()->role;
+        if ($userRole != 'admin' && $userRole != 'owner') {
             abort(403, 'Unauthorized access.');
         }
 
-        $log = $logAktivitas->load('user');
+        $log = LogAktivitas::with('user')->findOrFail($id);
         
         return view('owner.log-aktivitas.show', compact('log'));
     }
 
-    public function userLogs(User $user)
+    public function userLogs($id)
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->isOwner()) {
+        $userRole = auth()->user()->role;
+        if ($userRole != 'admin' && $userRole != 'owner') {
             abort(403, 'Unauthorized access.');
         }
 
+        $user = User::findOrFail($id);
         $logs = LogAktivitas::where('id_user', $user->id)
             ->with('user')
             ->latest()
@@ -75,7 +79,8 @@ class LogAktivitasController extends Controller
 
     public function export(Request $request)
     {
-        if (!auth()->user()->isAdmin() && !auth()->user()->isOwner()) {
+        $userRole = auth()->user()->role;
+        if ($userRole != 'admin' && $userRole != 'owner') {
             abort(403, 'Unauthorized access.');
         }
 
@@ -83,6 +88,17 @@ class LogAktivitasController extends Controller
 
         if ($request->filled('user_id')) {
             $query->where('id_user', $request->user_id);
+        }
+
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
+        }
+
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('aktivitas', 'like', '%' . $request->search . '%')
+                  ->orWhere('detail', 'like', '%' . $request->search . '%');
+            });
         }
 
         if ($request->filled('dari_tanggal') && $request->filled('sampai_tanggal')) {
@@ -121,5 +137,45 @@ class LogAktivitasController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function clean()
+    {
+        $userRole = auth()->user()->role;
+        if ($userRole != 'admin' && $userRole != 'owner') {
+            abort(403, 'Unauthorized access.');
+        }
+
+        $deleted = LogAktivitas::where('created_at', '<', now()->subDays(30))->delete();
+        
+        LogAktivitas::create([
+            'id_user' => auth()->id(),
+            'aktivitas' => 'Membersihkan log lama',
+            'detail' => 'Menghapus ' . $deleted . ' log yang lebih dari 30 hari',
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent()
+        ]);
+        
+        return redirect()->back()->with('success', 'Berhasil menghapus ' . $deleted . ' log yang lebih dari 30 hari');
+    }
+
+    public function clearAll()
+    {
+        $userRole = auth()->user()->role;
+        if ($userRole != 'admin' && $userRole != 'owner') {
+            abort(403, 'Unauthorized access.');
+        }
+
+        LogAktivitas::truncate();
+        
+        LogAktivitas::create([
+            'id_user' => auth()->id(),
+            'aktivitas' => 'Menghapus semua log',
+            'detail' => 'Semua log aktivitas dihapus',
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent()
+        ]);
+        
+        return redirect()->back()->with('success', 'Semua log aktivitas berhasil dihapus');
     }
 }

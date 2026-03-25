@@ -40,6 +40,7 @@
             font-size: 16px;
             font-weight: bold;
         }
+
     </style>
 </head>
 <body>
@@ -50,11 +51,11 @@
 
     <div class="date">
         <p>Periode:
-            @if(isset($dari) && $dari && isset($sampai) && $sampai)
+            @if($dari && $sampai)
             {{ date('d/m/Y', strtotime($dari)) }} - {{ date('d/m/Y', strtotime($sampai)) }}
-            @elseif(isset($dari) && $dari)
+            @elseif($dari)
             Dari {{ date('d/m/Y', strtotime($dari)) }}
-            @elseif(isset($sampai) && $sampai)
+            @elseif($sampai)
             Sampai {{ date('d/m/Y', strtotime($sampai)) }}
             @else
             Semua Periode
@@ -62,26 +63,28 @@
         </p>
     </div>
 
-     <table>
+    <table>
         <thead>
-             <tr>
+            <tr>
                 <th>Tanggal</th>
+                <th>Kasir</th>
                 <th>Pelanggan</th>
                 <th>Paket</th>
                 <th>Total</th>
-             </tr>
+            </tr>
         </thead>
         <tbody>
             @foreach($transaksi as $item)
-             <tr>
+            <tr>
                 <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
+                <td>{{ $item->user->name ?? '-' }}</td>
                 <td>{{ $item->nama_pelanggan }}</td>
                 <td>{{ $item->product->nama_jasa ?? '-' }}</td>
                 <td>Rp {{ number_format($item->total_harga,0,',','.') }}</td>
-             </tr>
+            </tr>
             @endforeach
         </tbody>
-     </table>
+    </table>
 
     <div class="total">
         <p>Total Pendapatan: Rp {{ number_format($transaksi->sum('total_harga'),0,',','.') }}</p>

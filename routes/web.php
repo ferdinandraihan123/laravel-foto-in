@@ -63,24 +63,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/transaksi/{id}/batal', [App\Http\Controllers\Kasir\TransaksiController::class, 'batal'])->name('transaksi.batal');
     });
 
-    Route::prefix('owner')->name('owner.')->middleware('role:owner')->group(function () {
+    Route::prefix('owner')->name('owner.')->middleware('role:admin,owner')->group(function () {
 
         // Dashboard Owner
         Route::get('/dashboard', [App\Http\Controllers\Owner\DashboardController::class, 'index'])->name('dashboard');
 
         // Produk Owner
         Route::resource('produk', App\Http\Controllers\Owner\ProductController::class);
-        Route::get('/produk', [App\Http\Controllers\Owner\ProductController::class, 'index'])->name('produk.index');
-        
+        // Route::resource sudah otomatis menyediakan index, create, store, show, edit, update, destroy
+        // Tidak perlu menambahkan route manual lagi
+
         // Laporan Owner
-        Route::prefix('laporan')->name('laporan.')->group(function () {
-            Route::get('/', [App\Http\Controllers\Owner\LaporanController::class, 'index'])->name('index');
-            Route::get('/harian', [App\Http\Controllers\Owner\LaporanController::class, 'harian'])->name('harian');
-            Route::get('/bulanan', [App\Http\Controllers\Owner\LaporanController::class, 'bulanan'])->name('bulanan');
-            Route::get('/tahunan', [App\Http\Controllers\Owner\LaporanController::class, 'tahunan'])->name('tahunan');
-            Route::get('/kinerja-kasir', [App\Http\Controllers\Owner\LaporanController::class, 'kinerjaKasir'])->name('kinerja-kasir');
-            Route::get('/produk-populer', [App\Http\Controllers\Owner\LaporanController::class, 'produkPopuler'])->name('produk-populer');
-        });
+        Route::get('/laporan', [App\Http\Controllers\Owner\LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/laporan/pdf', [App\Http\Controllers\Owner\LaporanController::class, 'pdf'])->name('laporan.pdf');
 
         // USERS OWNER
         Route::get('/users', [App\Http\Controllers\Owner\UserController::class, 'index'])->name('users.index');
@@ -89,6 +84,8 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('log-aktivitas')->name('log-aktivitas.')->group(function () {
             Route::get('/', [App\Http\Controllers\Owner\LogAktivitasController::class, 'index'])->name('index');
             Route::get('/export', [App\Http\Controllers\Owner\LogAktivitasController::class, 'export'])->name('export');
+            Route::post('/clean', [App\Http\Controllers\Owner\LogAktivitasController::class, 'clean'])->name('clean');
+            Route::post('/clear-all', [App\Http\Controllers\Owner\LogAktivitasController::class, 'clearAll'])->name('clear-all');
             Route::get('/{logAktivitas}', [App\Http\Controllers\Owner\LogAktivitasController::class, 'show'])->name('show');
             Route::get('/user/{user}', [App\Http\Controllers\Owner\LogAktivitasController::class, 'userLogs'])->name('user');
         });

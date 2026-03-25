@@ -13,17 +13,14 @@ class ProductController extends Controller
     {
         $query = Product::with('kategori');
 
-        // SEARCH
         if ($request->filled('search')) {
             $query->where('nama_jasa', 'like', '%' . $request->search . '%');
         }
 
-        // FILTER KATEGORI
         if ($request->filled('kategori')) {
             $query->where('id_kategori', $request->kategori);
         }
 
-        // FILTER STATUS
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
@@ -33,5 +30,12 @@ class ProductController extends Controller
         $kategoris = Kategori::all();
 
         return view('owner.produk.index', compact('products', 'kategoris'));
+    }
+
+    public function show($id)
+    {
+        $product = Product::with('kategori')->findOrFail($id);
+
+        return view('owner.produk.show', compact('product'));
     }
 }

@@ -12,6 +12,8 @@ class UserController extends Controller
     {
         $query = User::query();
 
+        $query->whereIn('role', ['admin', 'kasir']);
+
         if ($request->search) {
             $query->where(function($q) use ($request){
                 $q->where('name','like','%'.$request->search.'%')

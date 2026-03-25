@@ -73,8 +73,8 @@
                         </p>
                     </div>
 
-                    <span class="px-2 py-1 rounded-full text-xs font-medium {{ $product->getStatusBadgeClassAttribute() }}">
-                        {{ $product->getStatusTextAttribute() }}
+                    <span class="px-2 py-1 rounded-full text-xs font-medium {{ $product->status_badge_class }}">
+                        {{ $product->status_text }}
                     </span>
                 </div>
 

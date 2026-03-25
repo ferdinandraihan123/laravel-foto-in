@@ -31,7 +31,7 @@
                         <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">Dashboard</a>
                         <a href="{{ route('admin.users.index') }}" class="text-gray-700 hover:text-blue-600  py-2 text-sm font-medium">Kasir</a>
                         <a href="{{ route('admin.kategori.index') }}" class="text-gray-700 hover:text-blue-600  py-2 text-sm font-medium">Kategori</a>
-                        <a href="{{ route('admin.produk.index') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">Produk</a>
+                        <a href="{{ route('admin.produk.index') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">Paket</a>
                         <a href="{{ route('admin.transaksi.index') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">Transaksi</a>
                         <a href="{{ route('admin.laporan.index') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">Laporan</a>
                         @elseif(auth()->user()->isKasir())
@@ -39,8 +39,8 @@
                         <a href="{{ route('kasir.produk.index') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">Paket</a>
                         @elseif(auth()->user()->isOwner())
                         <a href="{{ route('owner.dashboard') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">Dashboard</a>
-                        <a href="{{ route('owner.users.index') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">User</a>
                         <a href="{{ route('owner.produk.index') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">Paket</a>
+                        <a href="{{ route('owner.users.index') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">Kasir</a>
                         <a href="{{ route('owner.laporan.index') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">Laporan</a>
                         <a href="{{ route('owner.log-aktivitas.index') }}" class="text-gray-700 hover:text-blue-600 py-2 text-sm font-medium">Log</a>
                         @endif

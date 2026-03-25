@@ -70,7 +70,7 @@ class Product extends Model
         if ($this->status !== 'aktif') {
             return false;
         }
-        
+
         return !$this->isInProgress();
     }
 
@@ -82,41 +82,86 @@ class Product extends Model
         return $this->isInProgress();
     }
 
-    /**
-     * GET STATUS TEXT UNTUK DITAMPILKAN
-     * - Proses: ada transaksi pending/proses
-     * - Tersedia: aktif & tidak ada transaksi aktif
-     * - Tidak Tersedia: status nonaktif
-     */
+
     public function getStatusTextAttribute()
     {
         if ($this->status !== 'aktif') {
             return 'Tidak Tersedia';
         }
-        
+
         if ($this->isInProgress()) {
-            return 'Proses';
+            $lastTransaction = $this->transaksis()
+                ->whereIn('status', ['pending', 'proses', 'selesai'])
+                ->latest()
+                ->first();
+
+            if ($lastTransaction) {
+                return match ($lastTransaction->status) {
+                    'pending' => 'Pending',
+                    'proses' => 'Proses',
+                    'selesai' => 'Selesai',
+                    default => 'Tersedia'
+                };
+            }
+
+            return 'Tersedia';
         }
-        
+
         return 'Tersedia';
     }
 
-    /**
-     * GET BADGE COLOR BERDASARKAN STATUS
-     * - Proses: biru (bg-blue-100 text-blue-800)
-     * - Tersedia: hijau (bg-green-100 text-green-800)
-     * - Tidak Tersedia: merah (bg-red-100 text-red-800)
-     */
     public function getStatusBadgeClassAttribute()
     {
         if ($this->status !== 'aktif') {
             return 'bg-red-100 text-red-800';
         }
-        
+
         if ($this->isInProgress()) {
-            return 'bg-blue-100 text-blue-800';
+            $lastTransaction = $this->transaksis()
+                ->whereIn('status', ['pending', 'proses', 'selesai'])
+                ->latest()
+                ->first();
+
+            if ($lastTransaction) {
+                return match ($lastTransaction->status) {
+                    'pending' => 'bg-yellow-100 text-yellow-800',
+                    'proses' => 'bg-blue-100 text-blue-800',
+                    'selesai' => 'bg-green-100 text-green-800',
+                    default => 'bg-green-100 text-green-800'
+                };
+            }
+
+            return 'bg-green-100 text-green-800';
         }
-        
+
         return 'bg-green-100 text-green-800';
+    }
+
+
+    public function getStatusColorAttribute()
+    {
+        if ($this->status !== 'aktif') {
+            return 'text-red-600';
+        }
+
+        if ($this->isInProgress()) {
+            $lastTransaction = $this->transaksis()
+                ->whereIn('status', ['pending', 'proses', 'selesai'])
+                ->latest()
+                ->first();
+
+            if ($lastTransaction) {
+                return match ($lastTransaction->status) {
+                    'pending' => 'text-yellow-600',
+                    'proses' => 'text-blue-600',
+                    'selesai' => 'text-green-600',
+                    default => 'text-green-600'
+                };
+            }
+
+            return 'text-green-600';
+        }
+
+        return 'text-green-600';
     }
 }
