@@ -64,44 +64,7 @@
                     </button>
                 </div>
             </form>
-            
-           
-            {{-- <div class="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-100">
-                <p class="text-sm font-semibold text-blue-800 mb-3 flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linecap="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Demo Credentials
-                </p>
-                <div class="grid grid-cols-2 gap-3 text-xs">
-                    <div class="bg-white rounded-lg p-3 border border-blue-100">
-                        <p class="font-bold text-blue-800">Admin</p>
-                        <p class="text-gray-600 mt-1">admin@fotoin.test</p>
-                        <p class="text-gray-500">password</p>
-                    </div>
-                    <div class="bg-white rounded-lg p-3 border border-blue-100">
-                        <p class="font-bold text-green-800">Kasir</p>
-                        <p class="text-gray-600 mt-1">kasir1@fotoin.test</p>
-                        <p class="text-gray-500">password</p>
-                    </div>
-                    <div class="bg-white rounded-lg p-3 border border-blue-100">
-                        <p class="font-bold text-purple-800">Owner</p>
-                        <p class="text-gray-600 mt-1">owner@fotoin.test</p>
-                        <p class="text-gray-500">password</p>
-                    </div>
-                    <div class="bg-white rounded-lg p-3 border border-blue-100">
-                        <p class="font-bold text-yellow-800">Kasir 2</p>
-                        <p class="text-gray-600 mt-1">kasir2@fotoin.test</p>
-                        <p class="text-gray-500">password</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Footer -->
-            <p class="mt-6 text-center text-xs text-gray-500">
-                &copy; {{ date('Y') }} Foto.in - Capture Your Story
-            </p>
-        </div> --}}
+        </div>
     </div>
 </div>
 @endsection

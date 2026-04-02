@@ -137,7 +137,6 @@
                 {{ $products->appends(request()->query())->links('pagination::tailwind') }}
             </div>
 
-            <!-- Info kecil di bawah -->
             <div class="text-center text-sm text-gray-400 mt-3">
                 Halaman {{ $products->currentPage() }} dari {{ $products->lastPage() }}
             </div>

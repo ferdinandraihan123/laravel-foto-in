@@ -17,7 +17,7 @@
                 <div>
                     <div>
                         <label for="nama_kategori" class="block text-sm font-medium text-gray-700 mb-2">Nama Kategori:</label>
-                        <input type="text" name="nama_kategori" id="nama_kategori" value="{{ old('nama_kategori') }}" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 pl-2 mb-4 @error('nama_kategori') border-red-500 @enderror" required>
+                        <input type="text" name="nama_kategori" id="nama_kategori" value="{{ old('nama_kategori') }}" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 pl-2 mb-4" required>
                         @error('nama_kategori')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                         @enderror
@@ -25,7 +25,7 @@
 
                     <div>
                         <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status:</label>
-                        <select name="status" id="status" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 border border-gray-300 pl-2" required>
+                        <select name="status" id="status" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 pl-2" required>
                             <option value="aktif" {{ old('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
                             <option value="nonaktif" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                         </select>

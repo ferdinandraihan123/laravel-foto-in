@@ -4,23 +4,17 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\LaporanController;
-// HAPUS import Kasir\TransaksiController dari sini karena sudah tidak dipakai di level atas
 
-// ==================== PUBLIC ROUTES ====================
 Route::get('/', function () {
     return redirect()->route('login');
 });
-
-// ==================== AUTH ROUTES (dari Breeze) ====================
 require __DIR__ . '/auth.php';
 
-// ==================== ROUTES YANG MEMERLUKAN LOGIN ====================
+
 Route::middleware(['auth'])->group(function () {
 
-    // ========== DASHBOARD UTAMA ==========
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // ==================== ROUTES ADMIN ====================
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
 
         // Dashboard Admin
@@ -40,9 +34,6 @@ Route::middleware(['auth'])->group(function () {
         // Transaksi Admin
         Route::get('/transaksi', [App\Http\Controllers\Admin\TransaksiController::class, 'index'])->name('transaksi.index');
         Route::get('/transaksi/{id}', [App\Http\Controllers\Admin\TransaksiController::class, 'show'])->name('transaksi.show');
-
-        // ✅ ROUTE UPDATE STATUS — sekarang benar ada di group admin
-        // nama route jadi: admin.transaksi.update-status
         Route::put('/transaksi/{id}/update-status', [App\Http\Controllers\Admin\TransaksiController::class, 'updateStatus'])->name('transaksi.update-status');
 
         // Laporan Admin
@@ -50,7 +41,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporan/pdf', [LaporanController::class, 'pdf'])->name('laporan.pdf');
     });
 
-    // ==================== ROUTES KASIR ====================
     Route::prefix('kasir')->name('kasir.')->middleware('role:kasir')->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\Kasir\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/produk', [App\Http\Controllers\Kasir\ProductController::class, 'index'])->name('produk.index');
@@ -65,29 +55,30 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('owner')->name('owner.')->middleware('role:admin,owner')->group(function () {
 
-        // Dashboard Owner
-        Route::get('/dashboard', [App\Http\Controllers\Owner\DashboardController::class, 'index'])->name('dashboard');
+    // Dashboard Owner
+    Route::get('/dashboard', [App\Http\Controllers\Owner\DashboardController::class, 'index'])->name('dashboard');
 
-        // Produk Owner
-        Route::resource('produk', App\Http\Controllers\Owner\ProductController::class);
-        // Route::resource sudah otomatis menyediakan index, create, store, show, edit, update, destroy
-        // Tidak perlu menambahkan route manual lagi
+    // Produk Owner
+    Route::resource('produk', App\Http\Controllers\Owner\ProductController::class);
 
-        // Laporan Owner
-        Route::get('/laporan', [App\Http\Controllers\Owner\LaporanController::class, 'index'])->name('laporan.index');
-        Route::get('/laporan/pdf', [App\Http\Controllers\Owner\LaporanController::class, 'pdf'])->name('laporan.pdf');
+    // KATEGORI (READ ONLY)
+    Route::get('/kategori', [App\Http\Controllers\Owner\KategoriController::class, 'index']) ->name('kategori.index');
+    // Laporan Owner
+    Route::get('/laporan', [App\Http\Controllers\Owner\LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/pdf', [App\Http\Controllers\Owner\LaporanController::class, 'pdf'])->name('laporan.pdf');
 
-        // USERS OWNER
-        Route::get('/users', [App\Http\Controllers\Owner\UserController::class, 'index'])->name('users.index');
+    // USERS OWNER
+    Route::get('/users', [App\Http\Controllers\Owner\UserController::class, 'index'])->name('users.index');
 
-        // Log Aktivitas Owner
-        Route::prefix('log-aktivitas')->name('log-aktivitas.')->group(function () {
-            Route::get('/', [App\Http\Controllers\Owner\LogAktivitasController::class, 'index'])->name('index');
-            Route::get('/export', [App\Http\Controllers\Owner\LogAktivitasController::class, 'export'])->name('export');
-            Route::post('/clean', [App\Http\Controllers\Owner\LogAktivitasController::class, 'clean'])->name('clean');
-            Route::post('/clear-all', [App\Http\Controllers\Owner\LogAktivitasController::class, 'clearAll'])->name('clear-all');
-            Route::get('/{logAktivitas}', [App\Http\Controllers\Owner\LogAktivitasController::class, 'show'])->name('show');
-            Route::get('/user/{user}', [App\Http\Controllers\Owner\LogAktivitasController::class, 'userLogs'])->name('user');
-        });
+    // Log Aktivitas Owner
+    Route::prefix('log-aktivitas')->name('log-aktivitas.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Owner\LogAktivitasController::class, 'index'])->name('index');
+        Route::get('/export', [App\Http\Controllers\Owner\LogAktivitasController::class, 'export'])->name('export');
+        Route::post('/clean', [App\Http\Controllers\Owner\LogAktivitasController::class, 'clean'])->name('clean');
+        Route::post('/clear-all', [App\Http\Controllers\Owner\LogAktivitasController::class, 'clearAll'])->name('clear-all');
+        Route::get('/{logAktivitas}', [App\Http\Controllers\Owner\LogAktivitasController::class, 'show'])->name('show');
+        Route::get('/user/{user}', [App\Http\Controllers\Owner\LogAktivitasController::class, 'userLogs'])->name('user');
     });
+
+});
 });

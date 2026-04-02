@@ -18,11 +18,16 @@
                 </div>
                 <div class="text-center">
 
-                    <span class="px-3 py-1 rounded-full text-sm 
-                        @if($transaksi->status == 'selesai') bg-green-100 text-green-800
-                        @elseif($transaksi->status == 'pending') bg-yellow-100 text-yellow-800
-                        @elseif($transaksi->status == 'proses') bg-blue-100 text-blue-800
-                        @else bg-red-100 text-red-800 @endif">
+                   @php
+                        $statusClass = match($transaksi->status) {
+                            'selesai' => 'bg-green-100 text-green-800',
+                            'pending' => 'bg-yellow-100 text-yellow-800',
+                            'proses' => 'bg-blue-100 text-blue-800',
+                            default => 'bg-red-100 text-red-800',
+                        };
+                    @endphp
+
+                    <span class="px-3 py-1 rounded-full text-sm {{ $statusClass }}">
                         {{ ucfirst($transaksi->status) }}
                     </span>
 

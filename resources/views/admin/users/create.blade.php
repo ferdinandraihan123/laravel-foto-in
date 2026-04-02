@@ -16,7 +16,7 @@
             <div class="space-y-6">
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap:</label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 pl-2 @error('name') border-red-500 @enderror" required>
+                    <input type="text" name="name" id="name" value="{{ old('name') }}" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 pl-2" required>
                     @error('name')
                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
@@ -24,7 +24,7 @@
 
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email:</label>
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 pl-2 @error('email') border-red-500 @enderror" required>
+                    <input type="email" name="email" id="email" value="{{ old('email') }}" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 pl-2" required>
                     @error('email')
                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror
@@ -32,7 +32,7 @@
 
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password:</label>
-                    <input type="password" name="password" id="password" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 pl-2 @error('password') border-red-500 @enderror" required>
+                    <input type="password" name="password" id="password" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 pl-2" required>
                     @error('password')
                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                     @enderror

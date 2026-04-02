@@ -18,7 +18,7 @@
                 <div>
                     <label for="nama_kategori" class="block text-sm font-medium text-gray-700 mb-2">Nama Kategori:</label>
                     <input type="text" name="nama_kategori" id="nama_kategori" value="{{ old('nama_kategori', $kategori->nama_kategori) }}" 
-                           class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 pl-2 @error('nama_kategori') border-red-500 p-4 @enderror"
+                           class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 pl-2"
                            required>
                     @error('nama_kategori')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
