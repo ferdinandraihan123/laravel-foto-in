@@ -124,7 +124,7 @@
                 </p>
 
                 <div class="bg-white rounded-lg py-3 text-center">
-                    <p class="text-xl font-bold text-blue-700 tracking-wide text-4xl">
+                    <p class="text-xl font-bold text-blue-700 tracking-wide">
                         {{ $transaksi->nomor_unik }}
                     </p>
                 </div>

@@ -9,10 +9,18 @@ use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
 {
+    /**
+     * JADWAL BOOKING (berdasarkan tanggal_booking)
+     * Urutan: tanggal_booking terbaru di atas, jam tercepat, lalu created_at terbaru
+     */
     public function index(Request $request)
     {
-        $query = Transaksi::with(['user', 'product']);
+        $query = Transaksi::with(['user', 'product'])
+            ->orderBy('tanggal_booking', 'desc')
+            ->orderBy('jam_booking', 'asc')
+            ->orderBy('created_at', 'desc');
 
+        // Filter search
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('nomor_unik', 'like', '%' . $request->search . '%')
@@ -20,25 +28,33 @@ class TransaksiController extends Controller
             });
         }
 
+        // Filter tanggal booking
         if ($request->filled('tanggal')) {
-            $query->whereDate('created_at', $request->tanggal);
+            $query->whereDate('tanggal_booking', $request->tanggal);
         }
 
+        // Filter status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        $transaksis = $query->latest()->paginate(15);
+        $transaksis = $query->paginate(10);
 
         return view('admin.transaksi.index', compact('transaksis'));
     }
 
+    /**
+     * DETAIL TRANSAKSI
+     */
     public function show($id)
     {
         $transaksi = Transaksi::with(['user', 'product', 'product.kategori'])->findOrFail($id);
         return view('admin.transaksi.show', compact('transaksi'));
     }
 
+    /**
+     * UPDATE STATUS TRANSAKSI
+     */
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
@@ -46,7 +62,7 @@ class TransaksiController extends Controller
         ]);
 
         $transaksi = Transaksi::with('product')->findOrFail($id);
-        $oldStatus = $transaksi->status; // Simpan status lama untuk log
+        $oldStatus = $transaksi->status;
         $transaksi->update(['status' => $request->status]);
 
         LogAktivitas::catat(
@@ -54,6 +70,6 @@ class TransaksiController extends Controller
             "Nomor: {$transaksi->nomor_unik}, Status: {$oldStatus} → {$request->status}"
         );
 
-        return back()->with('success', 'Status transaksi berhasil diupdate.');
+        return back()->with('success', 'Status berhasil diupdate.');
     }
 }

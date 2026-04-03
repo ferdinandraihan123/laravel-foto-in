@@ -51,34 +51,35 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/transaksi/{id}/struk', [App\Http\Controllers\Kasir\TransaksiController::class, 'struk'])->name('transaksi.struk');
         Route::get('/transaksi/{id}/download-struk', [App\Http\Controllers\Kasir\TransaksiController::class, 'downloadStruk'])->name('transaksi.downloadStruk');
         Route::post('/transaksi/{id}/batal', [App\Http\Controllers\Kasir\TransaksiController::class, 'batal'])->name('transaksi.batal');
+        Route::get('/check-jam', [App\Http\Controllers\Kasir\TransaksiController::class, 'checkJam'])->name('transaksi.checkJam');
+        Route::get('/jadwal', [App\Http\Controllers\Kasir\TransaksiController::class, 'jadwal'])->name('transaksi.jadwal');  // <-- TAMBAHKAN INI
     });
 
     Route::prefix('owner')->name('owner.')->middleware('role:admin,owner')->group(function () {
 
-    // Dashboard Owner
-    Route::get('/dashboard', [App\Http\Controllers\Owner\DashboardController::class, 'index'])->name('dashboard');
+        // Dashboard Owner
+        Route::get('/dashboard', [App\Http\Controllers\Owner\DashboardController::class, 'index'])->name('dashboard');
 
-    // Produk Owner
-    Route::resource('produk', App\Http\Controllers\Owner\ProductController::class);
+        // Produk Owner
+        Route::resource('produk', App\Http\Controllers\Owner\ProductController::class);
 
-    // KATEGORI (READ ONLY)
-    Route::get('/kategori', [App\Http\Controllers\Owner\KategoriController::class, 'index']) ->name('kategori.index');
-    // Laporan Owner
-    Route::get('/laporan', [App\Http\Controllers\Owner\LaporanController::class, 'index'])->name('laporan.index');
-    Route::get('/laporan/pdf', [App\Http\Controllers\Owner\LaporanController::class, 'pdf'])->name('laporan.pdf');
+        // KATEGORI (READ ONLY)
+        Route::get('/kategori', [App\Http\Controllers\Owner\KategoriController::class, 'index'])->name('kategori.index');
+        // Laporan Owner
+        Route::get('/laporan', [App\Http\Controllers\Owner\LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/laporan/pdf', [App\Http\Controllers\Owner\LaporanController::class, 'pdf'])->name('laporan.pdf');
 
-    // USERS OWNER
-    Route::get('/users', [App\Http\Controllers\Owner\UserController::class, 'index'])->name('users.index');
+        // USERS OWNER
+        Route::get('/users', [App\Http\Controllers\Owner\UserController::class, 'index'])->name('users.index');
 
-    // Log Aktivitas Owner
-    Route::prefix('log-aktivitas')->name('log-aktivitas.')->group(function () {
-        Route::get('/', [App\Http\Controllers\Owner\LogAktivitasController::class, 'index'])->name('index');
-        Route::get('/export', [App\Http\Controllers\Owner\LogAktivitasController::class, 'export'])->name('export');
-        Route::post('/clean', [App\Http\Controllers\Owner\LogAktivitasController::class, 'clean'])->name('clean');
-        Route::post('/clear-all', [App\Http\Controllers\Owner\LogAktivitasController::class, 'clearAll'])->name('clear-all');
-        Route::get('/{logAktivitas}', [App\Http\Controllers\Owner\LogAktivitasController::class, 'show'])->name('show');
-        Route::get('/user/{user}', [App\Http\Controllers\Owner\LogAktivitasController::class, 'userLogs'])->name('user');
+        // Log Aktivitas Owner
+        Route::prefix('log-aktivitas')->name('log-aktivitas.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Owner\LogAktivitasController::class, 'index'])->name('index');
+            Route::get('/export', [App\Http\Controllers\Owner\LogAktivitasController::class, 'export'])->name('export');
+            Route::post('/clean', [App\Http\Controllers\Owner\LogAktivitasController::class, 'clean'])->name('clean');
+            Route::post('/clear-all', [App\Http\Controllers\Owner\LogAktivitasController::class, 'clearAll'])->name('clear-all');
+            Route::get('/{logAktivitas}', [App\Http\Controllers\Owner\LogAktivitasController::class, 'show'])->name('show');
+            Route::get('/user/{user}', [App\Http\Controllers\Owner\LogAktivitasController::class, 'userLogs'])->name('user');
+        });
     });
-
-});
 });

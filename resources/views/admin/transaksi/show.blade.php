@@ -58,15 +58,33 @@
                 </div>
 
                 <div>
-                    <h3 class="font-semibold text-gray-700 mb-3">Informasi Kasir</h3>
+                    <h3 class="font-semibold text-gray-700 mb-3">Informasi Booking</h3>
                     <table class="w-full text-sm">
                         <tr>
-                            <td class="py-1 text-gray-500 w-32">Nama Kasir</td>
-                            <td class="text-gray-900 font-medium">: {{ $transaksi->user->name }}</td>
+                            <td class="py-1 text-gray-500 w-32">Tanggal Foto</td>
+                            <td class="text-gray-900 font-medium">: {{ $transaksi->tanggal_booking ? $transaksi->tanggal_booking->format('d/m/Y') : '-' }}</td>
                         </tr>
                         <tr>
-                            <td class="py-1 text-gray-500">Tanggal Booking</td>
-                            <td class="text-gray-700">: {{ $transaksi->tanggal_booking->format('d/m/Y') }}</td>
+                            <td class="py-1 text-gray-500">Jam Foto</td>
+                            <td class="text-gray-700">: 
+                                @php
+                                    $durasiPaket = $transaksi->product->durasi ?? 1;
+                                    $jamMulai = $transaksi->jam_booking;
+                                    if ($jamMulai) {
+                                        $jamMulaiInt = (int) substr($jamMulai, 0, 2);
+                                        $jamSelesaiInt = $jamMulaiInt + $durasiPaket;
+                                        $jamMulaiFormatted = sprintf("%02d.%02d", $jamMulaiInt, 0);
+                                        $jamSelesaiFormatted = sprintf("%02d.%02d", $jamSelesaiInt, 0);
+                                        echo $jamMulaiFormatted . ' s/d ' . $jamSelesaiFormatted;
+                                    } else {
+                                        echo '-';
+                                    }
+                                @endphp
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="py-1 text-gray-500">Kasir</td>
+                            <td class="text-gray-700">: {{ $transaksi->user->name }}</td>
                         </tr>
                     </table>
                 </div>
@@ -78,6 +96,7 @@
                     <div>
                         <p class="font-medium text-gray-900">{{ $transaksi->product->nama_jasa }}</p>
                         <p class="text-sm text-gray-500">Kategori: {{ $transaksi->product->kategori->nama_kategori ?? '-' }}</p>
+                        <p class="text-sm text-gray-500">Durasi: {{ $transaksi->product->durasi ?? '-' }} jam</p>
                         @if($transaksi->catatan)
                         <p class="text-sm text-gray-500 mt-2">Catatan: {{ $transaksi->catatan }}</p>
                         @endif
@@ -112,7 +131,7 @@
                     @method('PUT')
 
                     <select name="status" class="rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
-                        <option value="pending" {{ $transaksi->status == 'pending' ? 'selected' : '' }}> Pending</option>
+                        <option value="pending" {{ $transaksi->status == 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="proses" {{ $transaksi->status == 'proses' ? 'selected' : '' }}>Proses</option>
                         <option value="selesai" {{ $transaksi->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
                         <option value="batal" {{ $transaksi->status == 'batal' ? 'selected' : '' }}>Batal</option>
@@ -125,9 +144,9 @@
             </div>
 
             <div class="mt-6 flex justify-start">
-                <button onclick="window.history.back()" class="px-6 py-3 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition">
+                <a href="{{ route('admin.transaksi.index') }}" class="px-6 py-3 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition">
                     Kembali
-                </button>
+                </a>
             </div>
         </div>
     </div>

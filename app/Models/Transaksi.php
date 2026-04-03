@@ -35,6 +35,7 @@ class Transaksi extends Model
         'uang_bayar',
         'uang_kembali',
         'tanggal_booking',
+        'jam_booking',
         'status',
         'status_pembayaran',
         'catatan'
@@ -42,6 +43,7 @@ class Transaksi extends Model
 
     protected $casts = [
         'tanggal_booking' => 'date',
+        'jam_booking' => 'string',
         'harga_satuan' => 'decimal:2',
         'total_harga' => 'decimal:2',
         'uang_bayar' => 'decimal:2',
