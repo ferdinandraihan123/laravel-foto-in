@@ -136,7 +136,7 @@
 
                         <td class="px-6 py-4 text-sm">
 
-                            <span class="px-2 py-1 rounded-full text-xs {{ $user->role == 'admin'}}">
+                            <span class="px-2 py-1 rounded-full text-sm {{ $user->role == 'admin'}}">
                                 {{ ucfirst($user->role) }}
                             </span>
 
@@ -145,7 +145,7 @@
 
                         <td class="px-6 py-4 text-sm">
 
-                            <span class="px-2 py-1 rounded-full text-xs {{ $user->status=='aktif' ? : 'bg-red-100 text-red-800' }}">
+                            <span class="px-2 py-1 rounded-full text-sm {{ $user->status=='aktif' ? : 'bg-red-100 text-red-800' }}">
                                 {{ ucfirst($user->status) }}
                             </span>
 

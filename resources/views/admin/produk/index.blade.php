@@ -103,7 +103,7 @@
                             {{ $product->durasi }} jam
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-normal rounded-full 
+                            <span class="px-2 py-1 inline-flex text-sm leading-5 font-normal rounded-full 
                                 @if($product->status == 'aktif')
                                 @else bg-red-100 text-red-800 @endif">
                                 {{ ucfirst($product->status) }}

@@ -13,22 +13,20 @@ class ProductController extends Controller
     {
         $query = Product::with('kategori');
 
+        // Filter search
         if ($request->search) {
             $query->where('nama_jasa', 'like', '%' . $request->search . '%');
         }
 
+        // Filter kategori
         if ($request->kategori) {
             $query->where('id_kategori', $request->kategori);
         }
 
-        if ($request->status == 'tersedia') {
-            $query->where('status', 'aktif');
-        }
+        // HAPUS atau KOMENTAR baris ini!
+        // $query->where('status', 'aktif');  // <-- JANGAN PAKAI INI
 
-        if ($request->status == 'tidak') {
-            $query->where('status', 'nonaktif');
-        }
-
+        // Tampilkan SEMUA produk (aktif DAN nonaktif)
         $products = $query->paginate(6)->withQueryString();
 
         $kategoris = Kategori::all();
@@ -40,10 +38,7 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        if ($product->status !== 'aktif') {
-            abort(404);
-        }
-
+        // Tetap bisa lihat detail meskipun nonaktif
         return view('kasir.produk.show', compact('product'));
     }
 }

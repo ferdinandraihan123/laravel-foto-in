@@ -22,7 +22,7 @@
                     <br>
                     <span class="text-xs mt-1 inline-block">
                         @if($transaksi->status_pembayaran == 'lunas')
-                        <span class="text-green-600 font-semibold">Lunas</span>
+                        <span class="text-green-600 font-semibold pr-4">Lunas</span>
                         @else
                         <span class="text-yellow-600 font-semibold pl-2">Belum Bayar</span>
                         @endif
@@ -64,13 +64,15 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-medium text-gray-900">{{ $transaksi->product->nama_jasa }}</p>
-                        <p class="text-sm text-gray-500">Kategori: {{ $transaksi->product->kategori->nama_kategori ?? '-' }}</p>
+                        <p class="text-sm text-gray-500">Kategori: {{ $transaksi->product->kategori->nama_kategori ??
+                            '-' }}</p>
                         @if($transaksi->catatan)
                         <p class="text-sm text-gray-500 mt-2">Catatan: {{ $transaksi->catatan }}</p>
                         @endif
                     </div>
                     <div class="text-right">
-                        <p class="text-sm text-gray-500">{{ $transaksi->jumlah }} x Rp {{ number_format((float) $transaksi->harga_satuan, 0, ',', '.') }}</p>
+                        <p class="text-sm text-gray-500">{{ $transaksi->jumlah }} x Rp {{ number_format((float)
+                            $transaksi->harga_satuan, 0, ',', '.') }}</p>
                     </div>
                 </div>
             </div>
@@ -79,21 +81,25 @@
             <div class="border-t border-gray-200 pt-4 mb-6">
                 <div class="flex justify-between text-sm mb-2">
                     <span class="text-gray-500">Total Harga</span>
-                    <span class="font-semibold">Rp {{ number_format((float) $transaksi->total_harga, 0, ',', '.') }}</span>
+                    <span class="font-semibold">Rp {{ number_format((float) $transaksi->total_harga, 0, ',', '.')
+                        }}</span>
                 </div>
                 <div class="flex justify-between text-sm mb-2">
                     <span class="text-gray-500">Uang Bayar</span>
-                    <span class="font-semibold">Rp {{ number_format((float) $transaksi->uang_bayar, 0, ',', '.') }}</span>
+                    <span class="font-semibold">Rp {{ number_format((float) $transaksi->uang_bayar, 0, ',', '.')
+                        }}</span>
                 </div>
                 <div class="flex justify-between text-sm mb-2">
                     <span class="text-gray-500">Uang Kembali</span>
-                    <span class="font-semibold text-green-600">Rp {{ number_format((float) $transaksi->uang_kembali, 0, ',', '.') }}</span>
+                    <span class="font-semibold text-green-600">Rp {{ number_format((float) $transaksi->uang_kembali, 0,
+                        ',', '.') }}</span>
                 </div>
             </div>
 
             <div class="flex items-center gap-3 mt-6 pt-4 border-t">
 
-                <a href="{{ url()->previous() }}" class="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-100">
+                <a href="{{ url()->previous() }}"
+                    class="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-100">
                     Kembali
                 </a>
 
@@ -102,11 +108,13 @@
                 @endphp
 
                 @if(!$fromDashboard)
-                <a href="{{ route('kasir.transaksi.bayar', $transaksi->id_transaksi) }}" class="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
+                {{-- <a href="{{ route('kasir.transaksi.bayar', $transaksi->id_transaksi) }}"
+                    class="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
                     Proses Pembayaran
-                </a>
+                </a> --}}
                 @else
-                <a href="{{ route('kasir.transaksi.struk', $transaksi->id_transaksi) }}" class="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
+                <a href="{{ route('kasir.transaksi.struk', $transaksi->id_transaksi) }}"
+                    class="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
                     Lihat Struk
                 </a>
                 @endif

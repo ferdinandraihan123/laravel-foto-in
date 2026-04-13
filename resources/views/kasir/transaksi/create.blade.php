@@ -75,7 +75,7 @@
 
                 <div>
                     <label for="jumlah" class="block text-sm font-medium text-gray-700 mb-2">
-                        Jumlah <span class="text-red-500">*</span>
+                        Jumlah:
                     </label>
                     <input type="number" name="jumlah" id="jumlah" value="{{ old('jumlah', 1) }}" min="1"
                         class="w-full rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 border border-gray-300 px-3 py-2"

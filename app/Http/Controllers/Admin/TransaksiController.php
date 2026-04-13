@@ -54,6 +54,7 @@ class TransaksiController extends Controller
 
     /**
      * UPDATE STATUS TRANSAKSI
+     * Hanya bisa update jika status belum 'selesai'
      */
     public function updateStatus(Request $request, $id)
     {
@@ -62,6 +63,12 @@ class TransaksiController extends Controller
         ]);
 
         $transaksi = Transaksi::with('product')->findOrFail($id);
+
+        // CEK: Jika status sudah 'selesai', TIDAK BISA diupdate
+        if ($transaksi->status === 'selesai') {
+            return back()->with('error', 'Transaksi dengan status SELESAI tidak dapat diubah lagi!');
+        }
+
         $oldStatus = $transaksi->status;
         $transaksi->update(['status' => $request->status]);
 

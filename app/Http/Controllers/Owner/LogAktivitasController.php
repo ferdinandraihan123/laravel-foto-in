@@ -7,6 +7,7 @@ use App\Models\LogAktivitas;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LogAktivitasController extends Controller
 {
@@ -28,9 +29,9 @@ class LogAktivitasController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('aktivitas', 'like', '%' . $request->search . '%')
-                  ->orWhere('detail', 'like', '%' . $request->search . '%');
+                    ->orWhere('detail', 'like', '%' . $request->search . '%');
             });
         }
 
@@ -57,7 +58,7 @@ class LogAktivitasController extends Controller
         }
 
         $log = LogAktivitas::with('user')->findOrFail($id);
-        
+
         return view('owner.log-aktivitas.show', compact('log'));
     }
 
@@ -95,9 +96,9 @@ class LogAktivitasController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('aktivitas', 'like', '%' . $request->search . '%')
-                  ->orWhere('detail', 'like', '%' . $request->search . '%');
+                    ->orWhere('detail', 'like', '%' . $request->search . '%');
             });
         }
 
@@ -110,33 +111,21 @@ class LogAktivitasController extends Controller
 
         $logs = $query->latest()->get();
 
-        $filename = 'log-aktivitas-' . now()->format('Y-m-d-His') . '.csv';
-
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        // Data untuk filter yang dipilih
+        $filter = [
+            'user' => $request->filled('user_id') ? User::find($request->user_id)->name : 'Semua User',
+            'tanggal' => $request->filled('tanggal') ? $request->tanggal : 'Semua Tanggal',
+            'dari_tanggal' => $request->filled('dari_tanggal') ? $request->dari_tanggal : '-',
+            'sampai_tanggal' => $request->filled('sampai_tanggal') ? $request->sampai_tanggal : '-',
+            'search' => $request->filled('search') ? $request->search : '-',
+            'total' => $logs->count(),
+            'export_date' => now()->format('d/m/Y H:i:s'),
+            'export_by' => auth()->user()->name,
         ];
 
-        $callback = function() use ($logs) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, ['No', 'Waktu', 'User', 'Role', 'Aktivitas', 'Detail', 'IP Address', 'User Agent']);
-            
-            foreach ($logs as $index => $log) {
-                fputcsv($file, [
-                    $index + 1,
-                    $log->created_at->format('d/m/Y H:i:s'),
-                    $log->user->name ?? 'System',
-                    $log->user->role ?? '-',
-                    $log->aktivitas,
-                    $log->detail ?? '-',
-                    $log->ip_address ?? '-',
-                    $log->user_agent ?? '-'
-                ]);
-            }
-            fclose($file);
-        };
+        $pdf = Pdf::loadView('owner.log-aktivitas.export-pdf', compact('logs', 'filter'));
 
-        return response()->stream($callback, 200, $headers);
+        return $pdf->download('log-aktivitas-' . now()->format('Y-m-d-His') . '.pdf');
     }
 
     public function clean()
@@ -147,7 +136,7 @@ class LogAktivitasController extends Controller
         }
 
         $deleted = LogAktivitas::where('created_at', '<', now()->subDays(30))->delete();
-        
+
         LogAktivitas::create([
             'id_user' => auth()->id(),
             'aktivitas' => 'Membersihkan log lama',
@@ -155,7 +144,7 @@ class LogAktivitasController extends Controller
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent()
         ]);
-        
+
         return redirect()->back()->with('success', 'Berhasil menghapus ' . $deleted . ' log yang lebih dari 30 hari');
     }
 
@@ -167,7 +156,7 @@ class LogAktivitasController extends Controller
         }
 
         LogAktivitas::truncate();
-        
+
         LogAktivitas::create([
             'id_user' => auth()->id(),
             'aktivitas' => 'Menghapus semua log',
@@ -175,7 +164,7 @@ class LogAktivitasController extends Controller
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent()
         ]);
-        
+
         return redirect()->back()->with('success', 'Semua log aktivitas berhasil dihapus');
     }
 }

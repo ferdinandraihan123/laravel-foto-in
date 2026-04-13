@@ -53,6 +53,7 @@ class Product extends Model
 
     /**
      * CEK APAKAH PRODUK SEDANG ADA TRANSAKSI AKTIF (PENDING ATAU PROSES)
+     * Method ini untuk keperluan ADMIN saja
      */
     public function isInProgress()
     {
@@ -62,16 +63,25 @@ class Product extends Model
     }
 
     /**
-     * CEK APAKAH PRODUK TERSEDIA UNTUK DIPESAN
-     * Tersedia jika status aktif DAN TIDAK ADA transaksi pending/proses
+     * CEK APAKAH PRODUK TERSEDIA UNTUK DIPESAN DI KASIR
+     * Hanya cek status aktif, TIDAK cek transaksi
      */
     public function isAvailable()
     {
-        if ($this->status !== 'aktif') {
-            return false;
-        }
+        return $this->status === 'aktif';
+    }
 
-        return !$this->isInProgress();
+    /**
+     * CEK KETERSEDIAAN PRODUK BERDASARKAN TANGGAL (UNTUK VALIDASI DOUBLE BOOKING)
+     */
+    public function isAvailableForDate($tanggal)
+    {
+        $existingTransaction = $this->transaksis()
+            ->where('tanggal', $tanggal)
+            ->whereIn('status', ['pending', 'proses', 'confirmed'])
+            ->exists();
+
+        return !$existingTransaction;
     }
 
     /**
@@ -82,86 +92,29 @@ class Product extends Model
         return $this->isInProgress();
     }
 
-
+    /**
+     * GET STATUS TEXT (Aktif / Nonaktif)
+     */
     public function getStatusTextAttribute()
     {
-        if ($this->status !== 'aktif') {
-            return 'Tidak Tersedia';
-        }
-
-        if ($this->isInProgress()) {
-            $lastTransaction = $this->transaksis()
-                ->whereIn('status', ['pending', 'proses', 'selesai'])
-                ->latest()
-                ->first();
-
-            if ($lastTransaction) {
-                return match ($lastTransaction->status) {
-                    'pending' => 'Pending',
-                    'proses' => 'Proses',
-                    'selesai' => 'Selesai',
-                    default => 'Tersedia'
-                };
-            }
-
-            return 'Tersedia';
-        }
-
-        return 'Tersedia';
+        return $this->status === 'aktif' ? 'Aktif' : 'Nonaktif';
     }
 
+    /**
+     * GET STATUS BADGE CLASS
+     */
     public function getStatusBadgeClassAttribute()
     {
-        if ($this->status !== 'aktif') {
-            return 'bg-red-100 text-red-800';
-        }
-
-        if ($this->isInProgress()) {
-            $lastTransaction = $this->transaksis()
-                ->whereIn('status', ['pending', 'proses', 'selesai'])
-                ->latest()
-                ->first();
-
-            if ($lastTransaction) {
-                return match ($lastTransaction->status) {
-                    'pending' => 'bg-yellow-100 text-yellow-800',
-                    'proses' => 'bg-blue-100 text-blue-800',
-                    'selesai' => 'bg-green-100 text-green-800',
-                    default => 'bg-green-100 text-green-800'
-                };
-            }
-
-            return 'bg-green-100 text-green-800';
-        }
-
-        return 'bg-green-100 text-green-800';
+        return $this->status === 'aktif'
+            ? 'bg-green-100 text-green-800'
+            : 'bg-red-100 text-red-800';
     }
 
-
+    /**
+     * GET STATUS COLOR
+     */
     public function getStatusColorAttribute()
     {
-        if ($this->status !== 'aktif') {
-            return 'text-red-600';
-        }
-
-        if ($this->isInProgress()) {
-            $lastTransaction = $this->transaksis()
-                ->whereIn('status', ['pending', 'proses', 'selesai'])
-                ->latest()
-                ->first();
-
-            if ($lastTransaction) {
-                return match ($lastTransaction->status) {
-                    'pending' => 'text-yellow-600',
-                    'proses' => 'text-blue-600',
-                    'selesai' => 'text-green-600',
-                    default => 'text-green-600'
-                };
-            }
-
-            return 'text-green-600';
-        }
-
-        return 'text-green-600';
+        return $this->status === 'aktif' ? 'text-green-600' : 'text-red-600';
     }
 }

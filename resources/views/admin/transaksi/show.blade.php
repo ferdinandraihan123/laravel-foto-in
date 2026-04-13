@@ -18,13 +18,13 @@
                 </div>
                 <div class="text-center">
 
-                   @php
-                        $statusClass = match($transaksi->status) {
-                            'selesai' => 'bg-green-100 text-green-800',
-                            'pending' => 'bg-yellow-100 text-yellow-800',
-                            'proses' => 'bg-blue-100 text-blue-800',
-                            default => 'bg-red-100 text-red-800',
-                        };
+                    @php
+                    $statusClass = match($transaksi->status) {
+                    'selesai' => 'bg-green-100 text-green-800',
+                    'pending' => 'bg-yellow-100 text-yellow-800',
+                    'proses' => 'bg-blue-100 text-blue-800',
+                    default => 'bg-red-100 text-red-800',
+                    };
                     @endphp
 
                     <span class="px-3 py-1 rounded-full text-sm {{ $statusClass }}">
@@ -62,23 +62,24 @@
                     <table class="w-full text-sm">
                         <tr>
                             <td class="py-1 text-gray-500 w-32">Tanggal Foto</td>
-                            <td class="text-gray-900 font-medium">: {{ $transaksi->tanggal_booking ? $transaksi->tanggal_booking->format('d/m/Y') : '-' }}</td>
+                            <td class="text-gray-900 font-medium">: {{ $transaksi->tanggal_booking ?
+                                $transaksi->tanggal_booking->format('d/m/Y') : '-' }}</td>
                         </tr>
                         <tr>
                             <td class="py-1 text-gray-500">Jam Foto</td>
-                            <td class="text-gray-700">: 
+                            <td class="text-gray-700">:
                                 @php
-                                    $durasiPaket = $transaksi->product->durasi ?? 1;
-                                    $jamMulai = $transaksi->jam_booking;
-                                    if ($jamMulai) {
-                                        $jamMulaiInt = (int) substr($jamMulai, 0, 2);
-                                        $jamSelesaiInt = $jamMulaiInt + $durasiPaket;
-                                        $jamMulaiFormatted = sprintf("%02d.%02d", $jamMulaiInt, 0);
-                                        $jamSelesaiFormatted = sprintf("%02d.%02d", $jamSelesaiInt, 0);
-                                        echo $jamMulaiFormatted . ' s/d ' . $jamSelesaiFormatted;
-                                    } else {
-                                        echo '-';
-                                    }
+                                $durasiPaket = $transaksi->product->durasi ?? 1;
+                                $jamMulai = $transaksi->jam_booking;
+                                if ($jamMulai) {
+                                $jamMulaiInt = (int) substr($jamMulai, 0, 2);
+                                $jamSelesaiInt = $jamMulaiInt + $durasiPaket;
+                                $jamMulaiFormatted = sprintf("%02d.%02d", $jamMulaiInt, 0);
+                                $jamSelesaiFormatted = sprintf("%02d.%02d", $jamSelesaiInt, 0);
+                                echo $jamMulaiFormatted . ' s/d ' . $jamSelesaiFormatted;
+                                } else {
+                                echo '-';
+                                }
                                 @endphp
                             </td>
                         </tr>
@@ -95,14 +96,16 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="font-medium text-gray-900">{{ $transaksi->product->nama_jasa }}</p>
-                        <p class="text-sm text-gray-500">Kategori: {{ $transaksi->product->kategori->nama_kategori ?? '-' }}</p>
+                        <p class="text-sm text-gray-500">Kategori: {{ $transaksi->product->kategori->nama_kategori ??
+                            '-' }}</p>
                         <p class="text-sm text-gray-500">Durasi: {{ $transaksi->product->durasi ?? '-' }} jam</p>
                         @if($transaksi->catatan)
                         <p class="text-sm text-gray-500 mt-2">Catatan: {{ $transaksi->catatan }}</p>
                         @endif
                     </div>
                     <div class="text-right">
-                        <p class="text-sm text-gray-500">{{ $transaksi->jumlah }} x Rp {{ number_format((float) $transaksi->harga_satuan, 0, ',', '.') }}</p>
+                        <p class="text-sm text-gray-500">{{ $transaksi->jumlah }} x Rp {{ number_format((float)
+                            $transaksi->harga_satuan, 0, ',', '.') }}</p>
                     </div>
                 </div>
             </div>
@@ -111,40 +114,72 @@
             <div class="border-t border-gray-200 pt-4 mb-6">
                 <div class="flex justify-between text-sm mb-2">
                     <span class="text-gray-500">Total Harga</span>
-                    <span class="font-semibold">Rp {{ number_format((float) $transaksi->total_harga, 0, ',', '.') }}</span>
+                    <span class="font-semibold">Rp {{ number_format((float) $transaksi->total_harga, 0, ',', '.')
+                        }}</span>
                 </div>
                 <div class="flex justify-between text-sm mb-2">
                     <span class="text-gray-500">Uang Bayar</span>
-                    <span class="font-semibold">Rp {{ number_format((float) $transaksi->uang_bayar, 0, ',', '.') }}</span>
+                    <span class="font-semibold">Rp {{ number_format((float) $transaksi->uang_bayar, 0, ',', '.')
+                        }}</span>
                 </div>
                 <div class="flex justify-between text-sm mb-2">
                     <span class="text-gray-500">Uang Kembali</span>
-                    <span class="font-semibold text-green-600">Rp {{ number_format((float) $transaksi->uang_kembali, 0, ',', '.') }}</span>
+                    <span class="font-semibold text-green-600">Rp {{ number_format((float) $transaksi->uang_kembali, 0,
+                        ',', '.') }}</span>
                 </div>
             </div>
 
+            <!-- UPDATE STATUS TRANSAKSI -->
             <div class="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
                 <h3 class="font-semibold text-gray-900 mb-4">Update Status Transaksi</h3>
 
-                <form action="{{ route('admin.transaksi.update-status', $transaksi->id_transaksi) }}" method="POST" class="flex flex-wrap items-center gap-4">
+                @if($transaksi->status === 'selesai')
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div class="flex items-center gap-2 text-green-700 mb-2">
+                        <span class="font-semibold">Transaksi Sudah Selesai</span>
+                    </div>
+                    <p class="text-sm text-green-600">Status transaksi sudah SELESAI dan tidak dapat diubah lagi.</p>
+
+                    <div class="mt-3 flex flex-wrap items-center gap-4 opacity-50">
+                        <select disabled class="rounded-lg border-gray-300 bg-gray-100 cursor-not-allowed">
+                            <option value="pending" {{ $transaksi->status == 'pending' ? 'selected' : '' }}>Pending
+                            </option>
+                            <option value="proses" {{ $transaksi->status == 'proses' ? 'selected' : '' }}>Proses
+                            </option>
+                            <option value="selesai" {{ $transaksi->status == 'selesai' ? 'selected' : '' }}>Selesai
+                            </option>
+                            <option value="batal" {{ $transaksi->status == 'batal' ? 'selected' : '' }}>Batal</option>
+                        </select>
+                        <button disabled class="bg-gray-400 text-white px-6 py-2 rounded-lg cursor-not-allowed">
+                            Update Status
+                        </button>
+                    </div>
+                </div>
+                @else
+                <form action="{{ route('admin.transaksi.update-status', $transaksi->id_transaksi) }}" method="POST"
+                    class="flex flex-wrap items-center gap-4">
                     @csrf
                     @method('PUT')
 
-                    <select name="status" class="rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
+                    <select name="status"
+                        class="rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
                         <option value="pending" {{ $transaksi->status == 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="proses" {{ $transaksi->status == 'proses' ? 'selected' : '' }}>Proses</option>
                         <option value="selesai" {{ $transaksi->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
                         <option value="batal" {{ $transaksi->status == 'batal' ? 'selected' : '' }}>Batal</option>
                     </select>
 
-                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition shadow-sm">
+                    <button type="submit"
+                        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition shadow-sm">
                         Update Status
                     </button>
                 </form>
+                @endif
             </div>
 
             <div class="mt-6 flex justify-start">
-                <a href="{{ route('admin.transaksi.index') }}" class="px-6 py-3 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition">
+                <a href="{{ route('admin.transaksi.index') }}"
+                    class="px-6 py-3 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition">
                     Kembali
                 </a>
             </div>

@@ -10,39 +10,46 @@
             <p class="text-gray-600 mt-1">Catatan semua aktivitas dalam sistem</p>
         </div>
         <div class="flex space-x-3">
-            <a href="{{ route('owner.log-aktivitas.export', request()->query()) }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center">
-                Export CSV
+            <a href="{{ route('owner.log-aktivitas.export', request()->query()) }}"
+                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2">
+                Export PDF
             </a>
 
-            @if(auth()->user()->isAdmin() || auth()->user()->role == 'owner')
-            <form action="{{ route('owner.log-aktivitas.clean') }}" method="POST" class="inline" onsubmit="return confirm('Hapus log yang lebih dari 30 hari?')">
+            {{-- @if(auth()->user()->isAdmin() || auth()->user()->role == 'owner')
+            <form action="{{ route('owner.log-aktivitas.clean') }}" method="POST" class="inline"
+                onsubmit="return confirm('Hapus log yang lebih dari 30 hari?')">
                 @csrf
-                <button type="submit" class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition flex items-center">
+                <button type="submit"
+                    class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition flex items-center">
                     Bersihkan Log Lama
                 </button>
             </form>
 
-            <form action="{{ route('owner.log-aktivitas.clear-all') }}" method="POST" class="inline" onsubmit="return confirm('YAKIN INGIN MENGHAPUS SEMUA LOG? Tindakan ini tidak bisa dibatalkan!')">
+            <form action="{{ route('owner.log-aktivitas.clear-all') }}" method="POST" class="inline"
+                onsubmit="return confirm('YAKIN INGIN MENGHAPUS SEMUA LOG? Tindakan ini tidak bisa dibatalkan!')">
                 @csrf
-                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center">
+                <button type="submit"
+                    class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center">
                     Hapus Semua
                 </button>
             </form>
-            @endif
+            @endif --}}
         </div>
     </div>
 
     <div class="bg-white rounded-xl shadow-md p-4 mb-6 border border-gray-100">
         <form action="{{ route('owner.log-aktivitas.index') }}" method="GET" class="flex flex-wrap gap-4">
             <div class="flex-1 min-w-[200px]">
-                <input type="text" name="search" placeholder="Cari aktivitas..." value="{{ request('search') }}" class="w-full pl-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none">
+                <input type="text" name="search" placeholder="Cari aktivitas..." value="{{ request('search') }}"
+                    class="w-full pl-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none">
             </div>
 
             <div class="w-48">
-                <select name="user_id" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
+                <select name="user_id"
+                    class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
                     <option value="">Semua User</option>
                     @foreach($users as $user)
-                    <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
+                    <option value="{{ $user->id }}" {{ request('user_id')==$user->id ? 'selected' : '' }}>
                         {{ $user->name }} ({{ $user->role }})
                     </option>
                     @endforeach
@@ -50,7 +57,8 @@
             </div>
 
             <div class="w-40">
-                <input type="date" name="tanggal" value="{{ request('tanggal') }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
+                <input type="date" name="tanggal" value="{{ request('tanggal') }}"
+                    class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
             </div>
 
             <div>
@@ -61,7 +69,8 @@
 
             @if(request()->anyFilled(['search', 'user_id', 'tanggal']))
             <div>
-                <a href="{{ route('owner.log-aktivitas.index') }}" class="text-gray-500 hover:text-gray-700 px-4 py-2 inline-block">
+                <a href="{{ route('owner.log-aktivitas.index') }}"
+                    class="text-gray-500 hover:text-gray-700 px-4 py-2 inline-block">
                     Reset
                 </a>
             </div>
@@ -95,19 +104,19 @@
                         </td>
                         <td class="px-6 py-4 text-sm">
                             @if($log->user)
-                                @php
-                                    $roleBadgeClass = match($log->user->role) {
-                                        'admin' => '',
-                                        'owner' => '',
-                                        'kasir' => '',
-                                        default => ''
-                                    };
-                                @endphp
-                                <span class="px-2 py-1 rounded-full text-xs font-medium {{ $roleBadgeClass }}">
-                                    {{ ucfirst($log->user->role) }}
-                                </span>
+                            @php
+                            $roleBadgeClass = match($log->user->role) {
+                            'admin' => '',
+                            'owner' => '',
+                            'kasir' => '',
+                            default => ''
+                            };
+                            @endphp
+                            <span class="px-2 py-1 rounded-full text-xs font-medium {{ $roleBadgeClass }}">
+                                {{ ucfirst($log->user->role) }}
+                            </span>
                             @else
-                                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">System</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">System</span>
                             @endif
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-700">{{ $log->aktivitas }}</td>
