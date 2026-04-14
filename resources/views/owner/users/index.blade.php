@@ -14,7 +14,7 @@
         <form action="{{ route('owner.users.index') }}" method="GET" class="flex flex-wrap gap-4">
             <div class="flex-1 min-w-[200px]">
                 <div class="relative">
-                    <input type="text" name="search" placeholder="Cari nama/email..." value="{{ request('search') }}" class="w-full border border-gray-300 pl-2 pl-4 py-3 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
+                    <input type="text" name="search" placeholder="Cari nama/email..." value="{{ request('search') }}" class="w-full border py-3 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200">
                 </div>
             </div>
 
@@ -69,7 +69,6 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No HP</th>
                     </tr>
                 </thead>
 
@@ -104,9 +103,6 @@
 
                                 {{ ucfirst($user->status) }}
                             </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-500">
-                            {{ $user->no_hp ?? '-' }}
                         </td>
                     </tr>
                     @endforeach

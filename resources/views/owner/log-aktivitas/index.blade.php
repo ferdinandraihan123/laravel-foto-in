@@ -11,8 +11,8 @@
         </div>
         <div class="flex space-x-3">
             <a href="{{ route('owner.log-aktivitas.export', request()->query()) }}"
-                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2">
-                Export PDF
+                class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center gap-2">
+                Cetak PDF
             </a>
 
             {{-- @if(auth()->user()->isAdmin() || auth()->user()->role == 'owner')
